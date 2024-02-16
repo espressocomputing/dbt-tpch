@@ -25,12 +25,11 @@ quoting:
     identifier: false
     schema: false
 
+vars:
+  max_ship_date: "'1998-12-01'"
+
 models:
   dbt_tpch:
-
-      vars:
-        max_ship_date: "'1998-12-01'"
-
       base:
         schema: base
       ods:
