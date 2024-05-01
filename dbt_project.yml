@@ -36,3 +36,6 @@ models:
         schema: ods
       wh:
         schema: wh
+
+query-comment:
+  append: True
