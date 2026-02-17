@@ -1,6 +1,6 @@
 # dbt TPC-H
 
-dbt project for Snowflake using the TPC-H sample dataset. Builds a star schema (base -> ODS -> dimensional warehouse) from Snowflake's built-in `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`.
+dbt project for Snowflake using the TPC-H sample dataset. Builds a star schema (base -> ODS -> dimensional warehouse) from Snowflake's built-in `SNOWFLAKE_SAMPLE_DATA.TPCH_SF10`.
 
 ## Setup
 
@@ -37,7 +37,7 @@ uv run dbt run --select +dim_customer
 uv run dbt run
 ```
 
-Source data is read from `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1` (read-only). Output tables are written to `PJ_DBT_DEV`.
+Source data is read from `SNOWFLAKE_SAMPLE_DATA.TPCH_SF10` (read-only). Output tables are written to `PJ_DBT_DEV`.
 
 ## Proxy vs direct
 
@@ -53,21 +53,20 @@ uv run dbt run --target direct
 
 ## Warehouse control
 
-The warehouse is set by the `SNOWFLAKE_WAREHOUSE` env var (defaults to whatever is in the customer's keys.txt, typically `ESPRESSO_AI_WH`). Override it:
+The warehouse defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1`. The user defaults to `PJ`. Both can be overridden via env vars:
 
 ```bash
 export SNOWFLAKE_WAREHOUSE=MY_OTHER_WH
+export SNOWFLAKE_USER=MY_USER
 uv run dbt run
 ```
-
-Or use `USE WAREHOUSE` via dbt's `on-run-start` hook if you need per-run control.
 
 ## Scaling factor
 
 Change the source schema in `models/_source/source_tpch.yml` to use larger datasets:
 
-- `TPCH_SF1` (1GB, default)
-- `TPCH_SF10` (10GB)
+- `TPCH_SF1` (1GB)
+- `TPCH_SF10` (10GB, default)
 - `TPCH_SF100` (100GB)
 - `TPCH_SF1000` (1TB)
 
