@@ -49,8 +49,7 @@ final as (
             on o.order_key = s.order_key
 )
 select 
-    f.*,
-    {{ dbt_housekeeping() }}
+    f.*
 from
     final f
 order by

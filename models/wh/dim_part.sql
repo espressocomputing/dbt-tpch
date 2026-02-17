@@ -23,8 +23,7 @@ final as (
         parts p
 )
 select 
-    f.*,
-    {{ dbt_housekeeping() }}
+    f.*
 from
     final f
 order by

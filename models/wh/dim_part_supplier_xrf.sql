@@ -69,8 +69,7 @@ final as (
             on n.region_key = r.region_key
 )
 select 
-    f.*,
-    {{ dbt_housekeeping() }}
+    f.*
 from
     final f
 order by

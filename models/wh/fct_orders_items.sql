@@ -55,8 +55,7 @@ final as (
                 o.supplier_key = ps.supplier_key
 )
 select 
-    f.*,
-    {{ dbt_housekeeping() }}
+    f.*
 from
     final f
 order by
