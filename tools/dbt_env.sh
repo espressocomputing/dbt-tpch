@@ -21,7 +21,7 @@ aws s3 cp "s3://espresso-resizer-config/${CUSTOMER}/keys.txt" "$TEMP_DIR/keys.tx
 get_value() { grep -i "^$1=" "$TEMP_DIR/keys.txt" | cut -d= -f2 | tr -d '[:space:]'; }
 
 HOST=$(get_value "snowflake.resize.host")
-PROXY_HOST="${HOST//snowflakecomputing.com/espressocomputing.com}"
+PROXY_HOST="${HOST//snowflakecomputing.com/staging.espressocomputing.com}"
 PROXY_HOST="${PROXY_HOST//_/-}"
 
 echo "export SNOWFLAKE_ACCOUNT='$(get_value snowflake.resize.account)'"
