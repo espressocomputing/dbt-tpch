@@ -25,6 +25,7 @@ PROXY_HOST="${HOST//snowflakecomputing.com/espressocomputing.com}"
 PROXY_HOST="${PROXY_HOST//_/-}"
 
 echo "export SNOWFLAKE_ACCOUNT='$(get_value snowflake.resize.account)'"
+echo "export SNOWFLAKE_USER='$(get_value snowflake.resize.user)'"
 echo "export SNOWFLAKE_PASSWORD='$(get_value snowflake.resize.password)'"
 echo "export SNOWFLAKE_ROLE='$(get_value snowflake.resize.role)'"
 echo "export SNOWFLAKE_HOST_DIRECT='$HOST'"
