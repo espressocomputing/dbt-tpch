@@ -17,9 +17,9 @@ Creds are pulled from the espresso S3 config bucket. Load them into env vars bef
 eval $(AWS_PROFILE=espresso ./tools/dbt_env.sh espresso_ai_enterprise)
 ```
 
-This sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_HOST_DIRECT`, and `SNOWFLAKE_HOST_PROXY`.
+This sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_HOST_DIRECT`, and `SNOWFLAKE_HOST_PROXY`.
 
-The dbt profile lives at `~/.dbt/profiles.yml` and references these env vars.
+The dbt profile lives at `~/.dbt/profiles.yml` and references these env vars. Note: the warehouse and user are configured separately in the profile (not from S3 creds) — see "Warehouse and user" below.
 
 ## Running
 
@@ -51,14 +51,14 @@ uv run dbt run
 uv run dbt run --target direct
 ```
 
-## Warehouse control
+## Warehouse and user
 
-The warehouse defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1`. The user defaults to `PJ`. Both can be overridden via env vars:
+The warehouse defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1` and user defaults to `PJ`. These are independent of the creds loaded from S3 (which provide account, password, host, and role).
+
+Override via env vars:
 
 ```bash
-export SNOWFLAKE_WAREHOUSE=MY_OTHER_WH
-export SNOWFLAKE_USER=MY_USER
-uv run dbt run
+DBT_SNOWFLAKE_WAREHOUSE=MY_OTHER_WH DBT_SNOWFLAKE_USER=MY_USER uv run dbt run
 ```
 
 ## Scaling factor
