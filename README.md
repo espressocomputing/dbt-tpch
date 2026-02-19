@@ -10,6 +10,8 @@ uv sync && uv run dbt deps
 
 ## Credentials
 
+`run.sh` auto-loads credentials if `SNOWFLAKE_ACCOUNT` is not set. For bare `dbt` commands, load manually:
+
 ```bash
 eval $(AWS_PROFILE=espresso ./tools/dbt_env.sh espresso_ai_enterprise)
 ```
@@ -19,23 +21,21 @@ Sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROL
 ## Running
 
 ```bash
-uv run dbt run                                    # all models, SF10, direct
-uv run dbt run --vars '{"sf": "1"}'               # SF1
-uv run dbt run --select "tag:minimal"              # minimal smoke test
-uv run dbt run --select "tag:generated"           # only generated models
-uv run dbt run --select +dim_customer             # one model + upstream deps
-uv run dbt run --target proxy                     # through espresso staging proxy
+./tools/run.sh --sf 1 --select "tag:minimal"       # minimal smoke test
+./tools/run.sh                                      # SF1 + SF10, direct
+./tools/run.sh --sf 1                               # SF1 only
+./tools/run.sh --sf 10 --target proxy               # SF10 via proxy
+./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
+./tools/run.sh --select "tag:generated"             # only generated models
+./tools/run.sh --no-dag                             # regenerate flat models, then run
 ```
 
-### run.sh (loops over scale factors)
+Or call dbt directly (requires credentials loaded):
 
 ```bash
-./tools/run.sh                                    # SF1 + SF10, direct
-./tools/run.sh --sf 1 --select "tag:minimal"       # minimal smoke test
-./tools/run.sh --sf 1                             # SF1 only
-./tools/run.sh --sf 10 --target proxy             # SF10 via proxy
-./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
-./tools/run.sh --select "tag:generated"           # only generated models
+uv run dbt run                                    # all models, SF10, direct
+uv run dbt run --vars '{"sf": "1"}'               # SF1
+uv run dbt run --select "tag:minimal"             # minimal smoke test
 ```
 
 ## Targets

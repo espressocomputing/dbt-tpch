@@ -11,11 +11,14 @@ set -euo pipefail
 #   ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
 #   ./tools/run.sh --select "tag:generated" # Only generated models
 #   ./tools/run.sh --no-dag                 # Regenerate flat models (no DAG) before running
-#
-# Requires: eval $(AWS_PROFILE=espresso ./tools/dbt_env.sh espresso_ai_enterprise)
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Load Snowflake credentials if not already set
+if [[ -z "${SNOWFLAKE_ACCOUNT:-}" ]]; then
+    echo "=== Loading Snowflake credentials ==="
+    eval "$(AWS_PROFILE=espresso "$SCRIPT_DIR/dbt_env.sh" espresso_ai_enterprise)"
+fi
 
 # Defaults
 SFS="1 10"
