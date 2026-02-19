@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_h2_1997_fob') }} limit 1)
-
 select
     c.customer_key, c.customer_name, c.customer_market_segment_name,
     c.customer_account_balance,

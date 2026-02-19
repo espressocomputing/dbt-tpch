@@ -290,19 +290,31 @@ ord_agg_variants = [
      "count(*) as cnt, sum(order_amount) as total_amount", "5K"),
 ]
 
+def _is_multi_col(group_col):
+    """Check if group_col has multiple columns (comma outside parentheses)."""
+    depth = 0
+    for c in group_col:
+        if c == '(':
+            depth += 1
+        elif c == ')':
+            depth -= 1
+        elif c == ',' and depth == 0:
+            return True
+    return False
+
 for name, group_col, agg_expr, est_rows in ord_agg_variants:
     add(name, f"""
-select
-    {group_col} as group_key,
-    {agg_expr}
-from {{{{ ref('orders') }}}}
-group by 1
-""" if "," not in group_col else f"""
 select
     {group_col},
     {agg_expr}
 from {{{{ ref('orders') }}}}
 group by 1, 2
+""" if _is_multi_col(group_col) else f"""
+select
+    {group_col} as group_key,
+    {agg_expr}
+from {{{{ ref('orders') }}}}
+group by 1
 """, materialized="view", tags=[
     "scan:orders", "joins:0", "agg:simple",
     f"rows_sf1:{est_rows}", "cols:4", "filter:none",
@@ -2694,9 +2706,20 @@ if __name__ == "__main__":
         dag_models = [m for i, m in enumerate(final_models) if i not in minimal_indices]
         kept_models = [(i, m) for i, m in enumerate(final_models) if i in minimal_indices]
 
+        # Build full_scan_map: ODS table -> [full_scan model names]
+        # These are always safe as Type A upstreams (all columns, no filter)
+        full_scan_map = {}
+        for name, sql, mat, tags in final_models:
+            if name.endswith("_full_scan"):
+                for t in tags:
+                    if t.startswith("scan:") and "+" not in t:
+                        table = t.replace("scan:", "")
+                        full_scan_map.setdefault(table, []).append(name)
+
         # Build DAG on non-minimal models
         dag_models, edges = build_dag(dag_models, seed=args.seed,
-                                      p_source=args.p_source, p_dep=args.p_dep)
+                                      p_source=args.p_source, p_dep=args.p_dep,
+                                      full_scan_map=full_scan_map)
 
         if not args.no_incremental:
             dag_models = convert_to_incremental(dag_models, seed=args.seed)

@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1995') }} limit 1)
+
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('case_discount_tier') }}
+from {{ ref('orders_items') }}
 where order_date >= '1992-01-01' and order_date <= '1992-12-31'
     and ship_mode_name = 'FOB'
 

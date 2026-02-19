@@ -7,7 +7,7 @@
 
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('ord_date_h2_1994') }}
+from {{ ref('orders') }}
 where order_priority_code = '1-URGENT'
 
 -- sf={{ var('sf', '10') }}

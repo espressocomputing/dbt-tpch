@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join3_ord_cust_nat_agg_month_nation') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount
 from {{ ref('orders') }} o

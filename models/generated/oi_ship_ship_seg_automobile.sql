@@ -7,7 +7,7 @@
 
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount
-from {{ ref('tbl_oi_rail') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.ship_mode_name = 'SHIP'
     and c.customer_market_segment_name = 'AUTOMOBILE'

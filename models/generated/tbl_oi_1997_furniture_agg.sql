@@ -5,13 +5,13 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_win_rank_date_1995') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_join4_oi_cust_nat_reg') }} limit 1)
 
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1997-01-01' and oi.order_date <= '1997-12-31'
     and c.customer_market_segment_name = 'FURNITURE'

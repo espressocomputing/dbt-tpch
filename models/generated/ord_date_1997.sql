@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_automobile_reg_europe') }} limit 1)
-
 select
     order_key, order_date, customer_key, order_status_code,
     order_amount

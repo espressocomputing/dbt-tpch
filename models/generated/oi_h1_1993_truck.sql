@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_pt_agg_brand') }} limit 1)
-
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('oi_filter_rail_ship') }}
+from {{ ref('orders_items') }}
 where order_date >= '1993-01-01' and order_date <= '1993-06-30'
     and ship_mode_name = 'TRUCK'
 

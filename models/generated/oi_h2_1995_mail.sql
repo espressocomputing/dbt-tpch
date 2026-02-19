@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_prio_3_medium_seg_machinery') }} limit 1)
-
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount

@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join_oi_reg_europe_agg_1994') }} limit 1)
-
 select
     o.order_key, o.order_date, o.order_amount
 from {{ ref('orders') }} o

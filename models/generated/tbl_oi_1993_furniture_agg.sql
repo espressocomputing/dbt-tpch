@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('ord_agg_by_status') }} limit 1)
+
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,

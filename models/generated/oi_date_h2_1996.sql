@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1996_rail') }} limit 1)
-
 select
     order_item_key, order_key, order_date, customer_key, part_key,
     supplier_key, quantity, gross_item_sales_amount, net_item_sales_amount
-from {{ ref('tbl_oi_rail') }}
+from {{ ref('orders_items') }}
 where order_date >= '1996-07-01' and order_date <= '1996-12-31'
 
 -- sf={{ var('sf', '10') }}

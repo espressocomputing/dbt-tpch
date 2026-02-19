@@ -5,6 +5,6 @@
     )
 }}
 
-select distinct order_date from {{ ref('orders') }} order by 1
+select distinct order_date from {{ ref('ord_full_scan') }} order by 1
 
 -- sf={{ var('sf', '10') }}

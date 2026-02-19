@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_building_reg_europe') }} limit 1)
-
 select
     oi.order_item_key, oi.order_date,
     oi.gross_item_sales_amount, oi.quantity

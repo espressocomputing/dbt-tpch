@@ -5,9 +5,11 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join3_ord_cust_nat') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('ord_date_1995') }}
+from {{ ref('orders') }}
 where order_priority_code = '2-HIGH'
     and order_date >= '1994-01-01' and order_date <= '1994-12-31'
 

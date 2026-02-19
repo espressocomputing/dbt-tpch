@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_prio_4_not_specified_seg_furniture') }} limit 1)
-
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount
 from {{ ref('orders_items') }} oi

@@ -5,13 +5,13 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_ord_5_low_1995') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_brand_brand21_1996') }} limit 1)
 
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('oi_filter_rail_ship') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.ship_mode_name = 'AIR'
     and c.customer_market_segment_name = 'MACHINERY'

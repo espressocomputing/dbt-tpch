@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_brand_brand23_1995') }} limit 1)
+
 select
     ps.part_supplier_key, ps.part_key, ps.supplier_key,
     ps.supplier_cost_amount,

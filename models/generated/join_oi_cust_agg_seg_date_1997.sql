@@ -5,12 +5,14 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join3_ord_cust_nat_agg_month_nation') }} limit 1)
+
 select
     c.customer_market_segment_name,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales,
     avg(oi.discount_percentage) as avg_discount
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1997-01-01' and oi.order_date <= '1997-12-31'
 group by 1

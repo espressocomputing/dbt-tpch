@@ -5,14 +5,15 @@
     )
 }}
 
-with price_stats as (
+with _dep as (select 1 from {{ ref('tbl_join_oi_seg_household_agg') }} limit 1),
+price_stats as (
     select
         part_key,
         avg(base_price) as avg_price,
         min(base_price) as min_price,
         max(base_price) as max_price,
         count(*) as sale_count
-    from {{ ref('tbl_oi_returned') }}
+    from {{ ref('orders_items') }}
     group by 1
 )
 select

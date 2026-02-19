@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_automobile_reg_asia') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_win_ntile') }} limit 1)
 
 select
     date_trunc('year', oi.order_date) as year,

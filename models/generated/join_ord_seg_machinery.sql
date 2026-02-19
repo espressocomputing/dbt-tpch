@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_brand_brand11_1995') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount,
     c.customer_name

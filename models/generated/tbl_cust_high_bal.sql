@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_agg_part') }} limit 1)
+
 select customer_key, customer_name, customer_account_balance
 from {{ ref('customers') }}
 where customer_account_balance > 9000

@@ -5,8 +5,10 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_1995_fob') }} limit 1)
+
 select date_trunc('month', order_date) as month, count(*) as cnt, sum(order_amount) as total_amount
-from {{ ref('ord_date_1998') }}
+from {{ ref('orders') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

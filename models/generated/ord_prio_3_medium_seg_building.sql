@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_2_high_1994') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount
 from {{ ref('orders') }} o

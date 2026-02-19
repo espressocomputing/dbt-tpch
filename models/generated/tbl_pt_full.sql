@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_win_rank_date_1995') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_prio_2_high_seg_household_agg') }} limit 1)
 
 select part_key, part_name, part_brand_name, part_type_name, part_size, retail_price
 from {{ ref('parts') }}

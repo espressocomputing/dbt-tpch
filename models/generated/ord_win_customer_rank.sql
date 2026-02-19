@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1998_automobile') }} limit 1)
-
 select
     order_key, customer_key, order_date, order_amount,
     row_number() over (partition by customer_key order by order_date) as order_seq,

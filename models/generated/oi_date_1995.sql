@@ -8,7 +8,7 @@
 select
     order_item_key, order_key, order_date, customer_key, part_key,
     supplier_key, quantity, gross_item_sales_amount, net_item_sales_amount
-from {{ ref('oi_filter_rail_ship') }}
+from {{ ref('orders_items') }}
 where order_date >= '1995-01-01' and order_date <= '1995-12-31'
 
 -- sf={{ var('sf', '10') }}

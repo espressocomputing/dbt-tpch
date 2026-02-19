@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_asia_1993') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date,
     oi.gross_item_sales_amount, oi.quantity

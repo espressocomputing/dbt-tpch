@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_agg_date_h2_1994') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1995') }} limit 1)
 
 select
     r.region_name,

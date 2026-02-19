@@ -8,7 +8,7 @@
 select
     order_item_key, customer_key, order_date, gross_item_sales_amount,
     row_number() over (partition by customer_key order by gross_item_sales_amount desc) as sales_rank
-from {{ ref('orders_items') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1994-01-01' and order_date <= '1994-12-31'
 
 -- sf={{ var('sf', '10') }}

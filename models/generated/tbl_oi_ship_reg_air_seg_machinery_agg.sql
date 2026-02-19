@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_furniture_reg_asia') }} limit 1)
-
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,

@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('cte_multi_supplier_perf') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#25'
 

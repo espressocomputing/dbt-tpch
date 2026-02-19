@@ -10,7 +10,7 @@ select
     count(*) as item_count,
     sum(gross_item_sales_amount) as total_sales,
     sum(quantity) as total_qty
-from {{ ref('orders_items') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1994-01-01' and order_date <= '1994-12-31'
 group by 1
 

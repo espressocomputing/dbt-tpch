@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_ship_fob_reg_africa') }} limit 1)
+with _dep as (select 1 from {{ ref('ord_date_h1_1993') }} limit 1)
 
 select
     p.part_brand_name,

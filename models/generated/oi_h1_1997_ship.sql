@@ -8,7 +8,7 @@
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('oi_filter_high_value') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1997-01-01' and order_date <= '1997-06-30'
     and ship_mode_name = 'SHIP'
 

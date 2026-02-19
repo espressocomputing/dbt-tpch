@@ -5,9 +5,11 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_brand_brand14_1994') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.ship_mode_name = 'FOB'
     and c.customer_market_segment_name = 'AUTOMOBILE'

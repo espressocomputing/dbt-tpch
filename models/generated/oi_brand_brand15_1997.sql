@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_ship_agg_month') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_prio_4_not_specified_seg_household_agg') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,

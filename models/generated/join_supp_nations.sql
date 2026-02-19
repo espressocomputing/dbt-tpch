@@ -5,12 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('pt_brand_brand21') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_win_rank_customer') }} limit 1)
 
 select
     s.supplier_key, s.supplier_name, s.supplier_account_balance,
     n.nation_name
-from {{ ref('suppliers') }} s
+from {{ ref('supp_full_scan') }} s
 join {{ ref('nations') }} n on s.nation_key = n.nation_key
 
 -- sf={{ var('sf', '10') }}

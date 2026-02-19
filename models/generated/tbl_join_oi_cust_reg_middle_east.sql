@@ -1,9 +1,11 @@
 {{
     config(
-        materialized = 'incremental',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:none', 'rows_sf1:1.2M', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
+
+with _dep as (select 1 from {{ ref('oi_h2_1996_machinery') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount,
@@ -13,8 +15,5 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 where r.region_name = 'MIDDLE EAST'
-{% if is_incremental() %}
-  and order_date > (select max(order_date) from {{ this }})
-{% endif %}
 
 -- sf={{ var('sf', '10') }}

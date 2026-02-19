@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_date_h2_1996') }} limit 1)
-
 select
     date_trunc('month', o.order_date) as month,
     count(*) as cnt,

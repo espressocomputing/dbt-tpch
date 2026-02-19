@@ -10,7 +10,7 @@ select
     count(*) as cnt,
     sum(gross_item_sales_amount) as total_sales,
     avg(discount_percentage) as avg_discount
-from {{ ref('orders_items') }}
+from {{ ref('oi_full_scan') }}
 where return_status_code = 'R'
 group by 1
 

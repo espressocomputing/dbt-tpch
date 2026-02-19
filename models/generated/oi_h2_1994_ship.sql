@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join3_cust_nat_reg') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_h1_1995_furniture') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

@@ -5,12 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_1997_building_agg') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_5_low_1995') }} limit 1)
 
 select
     customer_key, customer_name, nation_key,
     customer_account_balance, customer_market_segment_name
-from {{ ref('customers') }}
+from {{ ref('cust_full_scan') }}
 where customer_account_balance > 9000
 
 -- sf={{ var('sf', '10') }}

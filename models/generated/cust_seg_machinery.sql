@@ -5,11 +5,9 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_automobile_reg_america') }} limit 1)
-
 select
     customer_key, customer_name, customer_account_balance, nation_key
-from {{ ref('cust_filter_high_balance') }}
+from {{ ref('customers') }}
 where customer_market_segment_name = 'MACHINERY'
 
 -- sf={{ var('sf', '10') }}

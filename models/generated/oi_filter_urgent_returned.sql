@@ -9,7 +9,7 @@ select
     order_item_key, order_key, order_date, customer_key,
     part_key, supplier_key, quantity, base_price,
     gross_item_sales_amount, net_item_sales_amount
-from {{ ref('oi_date_h2_1994') }}
+from {{ ref('orders_items') }}
 where return_status_code = 'R' and order_status_code = 'F'
 
 -- sf={{ var('sf', '10') }}

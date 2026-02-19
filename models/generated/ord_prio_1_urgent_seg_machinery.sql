@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_win_ntile') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_prio_2_high_seg_household_agg') }} limit 1)
 
 select
     o.order_key, o.order_date, o.order_amount

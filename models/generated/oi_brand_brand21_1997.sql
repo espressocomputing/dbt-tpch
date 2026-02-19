@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1993_household') }} limit 1)
+with _dep as (select 1 from {{ ref('join_oi_reg_europe_agg_1994') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,

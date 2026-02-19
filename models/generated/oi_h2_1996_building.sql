@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_brand_brand35') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('oi_date_h1_1995') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1996-07-01' and oi.order_date <= '1996-12-31'
     and c.customer_market_segment_name = 'BUILDING'

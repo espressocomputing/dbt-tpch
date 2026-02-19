@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1993_ship') }} limit 1)
-
 select
     order_item_key, customer_key, gross_item_sales_amount,
     ntile(100) over (order by gross_item_sales_amount) as percentile_bucket,

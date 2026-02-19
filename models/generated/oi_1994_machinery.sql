@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join_oi_reg_africa_agg_1994') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('oi_filter_high_value') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1994-01-01' and oi.order_date <= '1994-12-31'
     and c.customer_market_segment_name = 'MACHINERY'

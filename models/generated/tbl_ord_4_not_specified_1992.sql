@@ -7,7 +7,7 @@
 
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('ord_date_1994') }}
+from {{ ref('orders') }}
 where order_priority_code = '4-NOT SPECIFIED'
     and order_date >= '1992-01-01' and order_date <= '1992-12-31'
 {% if is_incremental() %}

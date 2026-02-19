@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join_oi_reg_america_agg_1996') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_h1_1995_rail') }} limit 1)
 
 select
     date_trunc('month', oi.order_date) as month,

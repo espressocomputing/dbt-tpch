@@ -5,9 +5,11 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join_oi_reg_europe_agg_1996') }} limit 1)
+
 select
     part_key, part_name, part_type_name, part_size, retail_price
-from {{ ref('parts_filter_small') }}
+from {{ ref('parts') }}
 where part_brand_name = 'Brand#35'
 
 -- sf={{ var('sf', '10') }}

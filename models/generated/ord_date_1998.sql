@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_ord_2_high_1998') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_1992_building_agg') }} limit 1)
 
 select
     order_key, order_date, customer_key, order_status_code,

@@ -5,13 +5,11 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_prio_5_low_seg_machinery') }} limit 1)
-
 select
     date_trunc('year', oi.order_date) as year,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('oi_date_1996') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key

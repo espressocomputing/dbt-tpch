@@ -46,7 +46,7 @@ def _has_order_date(sql):
     return "order_date" in sql.lower()
 
 
-def build_dag(models, *, seed=42, p_source=0.25, p_dep=0.35):
+def build_dag(models, *, seed=42, p_source=0.25, p_dep=0.35, full_scan_map=None):
     """Rewire models into a random DAG.
 
     Args:
@@ -54,42 +54,31 @@ def build_dag(models, *, seed=42, p_source=0.25, p_dep=0.35):
         seed: random seed for reproducibility
         p_source: probability of Type A edge (source substitution)
         p_dep: probability of Type B edge (existence dependency)
+        full_scan_map: dict mapping ODS table name -> [model names] for models
+            that pass through all columns unfiltered (e.g. oi_full_scan).
+            These are always safe as Type A upstreams.
 
     Returns:
         list of (name, sql, materialized, tags) tuples with DAG edges,
         dict mapping model_name -> list of upstream model names (for mermaid)
     """
+    if full_scan_map is None:
+        full_scan_map = {t: [] for t in ODS_TABLES}
     rng = random.Random(seed)
 
     # Build index for shuffling
     indexed = list(enumerate(models))
     rng.shuffle(indexed)
 
-    # Track which models are "passthrough" for each ODS table.
-    # A passthrough model selects all/most columns from a single ODS table
-    # without aggregation — suitable as a Type A upstream.
-    # We detect this from the tags: must have joins:0, agg:none, and scan a
-    # single ODS table.
-    def is_passthrough(tags, sql):
-        has_join0 = "joins:0" in tags
-        has_no_agg = "agg:none" in tags
-        scan_tags = [t for t in tags if t.startswith("scan:")]
-        if not scan_tags:
-            return False
-        scanned = scan_tags[0].replace("scan:", "")
-        # Single table only (no + in scan tag)
-        if "+" in scanned:
-            return False
-        # Must not have heavy filter or aggregation
-        has_heavy = "filter:heavy" in tags
-        return has_join0 and has_no_agg and not has_heavy and scanned in ODS_TABLES
-
     # Process models in topological order (shuffled order)
     result = [None] * len(models)
     edges = {}  # model_name -> [upstream_names]
 
-    # For each ODS table, track passthrough models seen so far (by position)
-    passthrough_by_table = {t: [] for t in ODS_TABLES}
+    # For each ODS table, track passthrough models (full-column, unfiltered
+    # scans) that can serve as Type A upstreams. Pre-populated from
+    # full_scan_map so that minimal-set full_scan models are available even
+    # though they're not in the shuffled set.
+    passthrough_by_table = {t: list(v) for t, v in full_scan_map.items()}
 
     # All models seen so far (for Type B edges)
     seen = []
@@ -134,12 +123,6 @@ def build_dag(models, *, seed=42, p_source=0.25, p_dep=0.35):
                     sql = "\nwith " + dep_cte + "\n" + sql
                 upstream.append(dep_name)
 
-        # Track passthrough
-        if is_passthrough(tags, sql):
-            table = _primary_ods_table(sql)
-            if table:
-                passthrough_by_table[table].append(name)
-
         seen.append(name)
         edges[name] = upstream
         result[orig_idx] = (name, sql, materialized, tags)
@@ -160,11 +143,18 @@ def convert_to_incremental(models, *, seed=42, target_count=100):
     """
     rng = random.Random(seed + 1)  # different seed to decouple from DAG
 
-    # Find eligible models: table materialization with order_date in SQL
+    # Find eligible models: table materialization with order_date, no joins,
+    # no CTEs, no GROUP BY (Snowflake rejects subqueries with aggregates
+    # in WHERE before GROUP BY).
     eligible = []
     for i, (name, sql, materialized, tags) in enumerate(models):
         if materialized == "table" and _has_order_date(sql):
-            eligible.append(i)
+            stripped = sql.lstrip().lower()
+            has_cte = stripped.startswith("with ")
+            has_join = "join " in stripped
+            has_group_by = "group by" in stripped
+            if not has_cte and not has_join and not has_group_by:
+                eligible.append(i)
 
     # Sample target_count from eligible
     count = min(target_count, len(eligible))

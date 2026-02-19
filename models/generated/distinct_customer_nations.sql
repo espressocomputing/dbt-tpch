@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_ship_fob_seg_automobile_agg') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_4_not_specified_1997') }} limit 1)
 
 select distinct c.customer_key, n.nation_name
 from {{ ref('customers') }} c

@@ -6,7 +6,7 @@
 }}
 
 select part_brand_name, count(*) as cnt, avg(retail_price) as avg_price
-from {{ ref('parts') }}
+from {{ ref('parts_full_scan') }}
 group by part_brand_name
 
 -- sf={{ var('sf', '10') }}

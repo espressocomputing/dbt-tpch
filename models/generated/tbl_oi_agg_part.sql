@@ -6,7 +6,7 @@
 }}
 
 select part_key, count(*) as times_ordered, sum(quantity) as total_qty, avg(base_price) as avg_price, sum(gross_item_sales_amount) as total_revenue
-from {{ ref('orders_items') }}
+from {{ ref('oi_full_scan') }}
 group by part_key
 
 -- sf={{ var('sf', '10') }}

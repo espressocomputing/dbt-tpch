@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1993_fob') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_ord_prio_5_low_seg_automobile_agg') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date,

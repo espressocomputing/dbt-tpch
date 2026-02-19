@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('ord_prio_4_not_specified_seg_furniture') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount,
     c.customer_name, c.customer_market_segment_name

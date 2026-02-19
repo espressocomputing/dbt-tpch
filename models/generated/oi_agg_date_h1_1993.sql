@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1997_automobile') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_cust_full') }} limit 1)
 
 select
     customer_key,

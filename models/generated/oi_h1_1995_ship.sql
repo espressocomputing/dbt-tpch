@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_h2_1996_mail') }} limit 1)
-
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount

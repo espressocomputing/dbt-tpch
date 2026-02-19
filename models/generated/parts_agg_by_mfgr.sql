@@ -8,7 +8,7 @@
 select
     part_manufacturer_name as group_key,
     count(*) as cnt, avg(retail_price) as avg_price
-from {{ ref('parts_filter_large') }}
+from {{ ref('parts') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

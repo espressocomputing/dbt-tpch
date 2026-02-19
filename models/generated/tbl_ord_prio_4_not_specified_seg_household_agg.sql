@@ -9,7 +9,7 @@ select
     date_trunc('month', o.order_date) as month,
     count(*) as cnt,
     sum(o.order_amount) as total_amount
-from {{ ref('ord_date_1995') }} o
+from {{ ref('orders') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '4-NOT SPECIFIED'
     and c.customer_market_segment_name = 'HOUSEHOLD'

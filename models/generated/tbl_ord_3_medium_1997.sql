@@ -7,7 +7,7 @@
 
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('orders') }}
+from {{ ref('ord_full_scan') }}
 where order_priority_code = '3-MEDIUM'
     and order_date >= '1997-01-01' and order_date <= '1997-12-31'
 {% if is_incremental() %}

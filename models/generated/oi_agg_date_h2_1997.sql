@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_ship_rail_seg_machinery') }} limit 1)
+with _dep as (select 1 from {{ ref('parts_never_ordered') }} limit 1)
 
 select
     customer_key,

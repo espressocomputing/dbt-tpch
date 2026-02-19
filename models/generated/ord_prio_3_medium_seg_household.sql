@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_h1_1995_truck') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount
 from {{ ref('orders') }} o

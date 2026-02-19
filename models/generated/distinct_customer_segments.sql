@@ -5,6 +5,6 @@
     )
 }}
 
-select distinct customer_market_segment_name from {{ ref('customers') }}
+select distinct customer_market_segment_name from {{ ref('cust_full_scan') }}
 
 -- sf={{ var('sf', '10') }}

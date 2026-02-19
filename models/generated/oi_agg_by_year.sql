@@ -8,7 +8,7 @@
 select
     date_trunc('year', order_date) as group_key,
     count(*) as cnt, sum(quantity) as total_qty, sum(gross_item_sales_amount) as total_sales
-from {{ ref('tbl_oi_ship') }}
+from {{ ref('orders_items') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

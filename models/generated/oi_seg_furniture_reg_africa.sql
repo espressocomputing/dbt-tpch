@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join3_ord_cust_nat') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_brand_brand21_1992') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date,

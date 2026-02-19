@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_brand_brand55') }} limit 1)
+
 select
     part_size as group_key,
     count(*) as cnt, avg(retail_price) as avg_price

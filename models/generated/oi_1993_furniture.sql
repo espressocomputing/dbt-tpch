@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_h1_1995_truck') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_seg_machinery_reg_middle_east_agg') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,

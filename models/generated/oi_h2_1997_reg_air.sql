@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1996_truck') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_join_oi_cust_reg_america') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

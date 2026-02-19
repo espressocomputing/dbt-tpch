@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_1996_air') }} limit 1)
-
 select
     customer_key, customer_name, nation_key,
     customer_account_balance, customer_market_segment_name

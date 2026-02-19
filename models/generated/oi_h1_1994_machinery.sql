@@ -5,12 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_brand_brand15_1992') }} limit 1)
+with _dep as (select 1 from {{ ref('join_oi_cust_reg_middle_east') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('tbl_oi_rail') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1994-01-01' and oi.order_date <= '1994-06-30'
     and c.customer_market_segment_name = 'MACHINERY'

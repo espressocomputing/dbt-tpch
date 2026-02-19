@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_seg_automobile_reg_america') }} limit 1)
+
 select
     order_item_key, order_key, order_date, customer_key, part_key,
     supplier_key, quantity, gross_item_sales_amount, net_item_sales_amount

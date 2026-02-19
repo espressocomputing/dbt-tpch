@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join3_oi_parts_supp') }} limit 1)
+
 select
     r.region_name,
     count(*) as ps_count,

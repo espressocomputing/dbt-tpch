@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_cust_agg_segment') }} limit 1)
+
 select
     nation_key as group_key,
     count(*) as cnt, avg(supplier_account_balance) as avg_balance

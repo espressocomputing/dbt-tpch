@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_agg_by_date') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_ship_rail_seg_household') }} limit 1)
 
 select
     order_item_key, order_key, order_date, customer_key,

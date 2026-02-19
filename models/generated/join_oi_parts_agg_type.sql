@@ -5,14 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_furniture_reg_asia') }} limit 1)
-
 select
     p.part_type_name,
     count(*) as item_count,
     sum(oi.quantity) as total_qty,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 group by 1
 

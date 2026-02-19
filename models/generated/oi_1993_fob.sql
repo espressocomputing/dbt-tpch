@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_seg_machinery_reg_middle_east_agg') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_ship_fob_seg_automobile') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

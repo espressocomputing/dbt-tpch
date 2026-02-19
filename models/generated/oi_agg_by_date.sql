@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_join_oi_cust_reg_europe') }} limit 1)
+
 select
     order_date as group_key,
     count(*) as cnt, sum(gross_item_sales_amount) as total_sales

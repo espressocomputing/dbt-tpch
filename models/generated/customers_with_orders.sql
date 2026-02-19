@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_brand_brand21_1996') }} limit 1)
-
 select c.customer_key, c.customer_name, c.customer_market_segment_name
 from {{ ref('customers') }} c
 where exists (

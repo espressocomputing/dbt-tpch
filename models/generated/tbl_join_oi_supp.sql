@@ -5,13 +5,11 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_brand_brand21') }} limit 1)
-
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount,
     s.supplier_name, s.nation_key
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_full_scan') }} oi
 join {{ ref('suppliers') }} s on oi.supplier_key = s.supplier_key
 
 -- sf={{ var('sf', '10') }}

@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_ship_mail_seg_automobile_agg') }} limit 1)
-
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,

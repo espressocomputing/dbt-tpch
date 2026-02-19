@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_1995_building_agg') }} limit 1)
-
 select
     date_trunc('month', o.order_date) as month,
     c.customer_market_segment_name,

@@ -5,11 +5,11 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_agg_filtered_air') }} limit 1)
+with _dep as (select 1 from {{ ref('ord_filter_open') }} limit 1)
 
 select
     part_key, part_name, part_type_name, part_size, retail_price
-from {{ ref('parts_filter_large') }}
+from {{ ref('parts_full_scan') }}
 where part_brand_name = 'Brand#25'
 
 -- sf={{ var('sf', '10') }}

@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('ord_date_1995') }} limit 1)
+
 select
     s.nation_key,
     count(*) as item_count,

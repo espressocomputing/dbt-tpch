@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_agg_month') }} limit 1)
-
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('case_discount_tier') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1993-01-01' and order_date <= '1993-06-30'
     and ship_mode_name = 'MAIL'
 

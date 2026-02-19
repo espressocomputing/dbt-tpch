@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_date_1992') }} limit 1)
-
 select
     part_container_desc as group_key,
     count(*) as cnt, avg(retail_price) as avg_price
-from {{ ref('parts') }}
+from {{ ref('parts_full_scan') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_agg_by_date_status') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_ship_mail_seg_automobile_agg') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

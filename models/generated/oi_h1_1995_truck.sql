@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_ship_mail_reg_africa') }} limit 1)
+
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('tbl_oi_rail') }}
+from {{ ref('orders_items') }}
 where order_date >= '1995-01-01' and order_date <= '1995-06-30'
     and ship_mode_name = 'TRUCK'
 

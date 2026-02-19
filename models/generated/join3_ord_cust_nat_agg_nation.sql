@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_join4_oi_cust_nat_reg') }} limit 1)
-
 select
     n.nation_name,
     count(*) as order_count,

@@ -7,7 +7,7 @@
 
 select
     o.order_key, o.order_date, o.order_amount
-from {{ ref('orders') }} o
+from {{ ref('ord_full_scan') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '3-MEDIUM'
     and c.customer_market_segment_name = 'FURNITURE'

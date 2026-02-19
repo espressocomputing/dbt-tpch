@@ -5,12 +5,14 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_ship_air_reg_middle_east') }} limit 1)
+
 select
     c.customer_key, c.customer_name, c.customer_market_segment_name,
     c.customer_account_balance,
     n.nation_name,
     r.region_name
-from {{ ref('cust_seg_building') }} c
+from {{ ref('customers') }} c
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 

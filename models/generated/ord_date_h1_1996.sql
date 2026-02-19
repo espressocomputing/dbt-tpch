@@ -5,12 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_1994_household_agg') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_brand_brand23_1992') }} limit 1)
 
 select
     order_key, order_date, customer_key, order_status_code,
     order_amount
-from {{ ref('orders') }}
+from {{ ref('ord_full_scan') }}
 where order_date >= '1996-01-01' and order_date <= '1996-06-30'
 
 -- sf={{ var('sf', '10') }}

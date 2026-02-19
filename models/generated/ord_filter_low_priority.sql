@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_join4_oi_cust_nat_reg') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_ship_air_reg_asia') }} limit 1)
 
 select
     order_key, order_date, customer_key, order_status_code,

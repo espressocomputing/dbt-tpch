@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join_ord_seg_building') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_agg_date_1993') }} limit 1)
 
 select
     order_priority_code as group_key,

@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join_oi_supp_reg_middle_east') }} limit 1)
-
 select
     date_trunc('month', order_date) as month,
     count(*) as cnt,

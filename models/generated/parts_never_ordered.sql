@@ -5,8 +5,10 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_agg_filtered_air') }} limit 1)
+
 select p.part_key, p.part_name, p.part_brand_name, p.retail_price
-from {{ ref('parts') }} p
+from {{ ref('parts_full_scan') }} p
 where not exists (
     select 1 from {{ ref('orders_items') }} oi where oi.part_key = p.part_key
 )

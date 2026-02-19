@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_join_oi_seg_machinery_agg') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_amount
 from {{ ref('orders') }}

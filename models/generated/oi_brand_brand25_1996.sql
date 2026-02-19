@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_h2_1993_automobile') }} limit 1)
-
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('case_discount_tier') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#25'
     and oi.order_date >= '1996-01-01' and oi.order_date <= '1996-12-31'

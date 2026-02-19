@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1994_furniture_agg') }} limit 1)
+
 select
     part_key as group_key,
     count(*) as times_ordered, sum(quantity) as total_qty, avg(base_price) as avg_price

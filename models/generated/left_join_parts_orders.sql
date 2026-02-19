@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_europe_1993') }} limit 1)
-
 select
     p.part_key, p.part_name, p.part_brand_name, p.retail_price,
     count(oi.order_item_key) as times_ordered,

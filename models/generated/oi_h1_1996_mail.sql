@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1997_machinery_agg') }} limit 1)
+
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('orders_items') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1996-01-01' and order_date <= '1996-06-30'
     and ship_mode_name = 'MAIL'
 

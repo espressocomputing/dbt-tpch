@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_brand_brand22_1992') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_agg_date_1995') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

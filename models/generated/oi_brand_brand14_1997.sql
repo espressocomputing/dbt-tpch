@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_brand_brand14') }} limit 1)
+with _dep as (select 1 from {{ ref('ord_filter_open') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,

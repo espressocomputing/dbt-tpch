@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_filter_open') }} limit 1)
-
 select
     date_trunc('year', oi.order_date) as year,
     count(*) as item_count,

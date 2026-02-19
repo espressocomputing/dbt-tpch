@@ -5,14 +5,14 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_ord_5_low_1995') }} limit 1),
+with _dep as (select 1 from {{ ref('join_oi_reg_africa_agg_1997') }} limit 1),
 supplier_sales as (
     select
         supplier_key,
         sum(gross_item_sales_amount) as total_sales,
         count(*) as item_count,
         avg(discount_percentage) as avg_discount
-    from {{ ref('orders_items') }}
+    from {{ ref('oi_full_scan') }}
     group by 1
 )
 select

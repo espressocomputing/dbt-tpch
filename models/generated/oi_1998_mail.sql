@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_seg_building_reg_asia') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_1995_mail') }} limit 1)
 
 select
     order_item_key, order_date, customer_key, quantity,

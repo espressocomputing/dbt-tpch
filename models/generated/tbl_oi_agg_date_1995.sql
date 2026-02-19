@@ -1,9 +1,11 @@
 {{
     config(
-        materialized = 'incremental',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:100K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
+
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1996') }} limit 1)
 
 select
     customer_key,
@@ -12,10 +14,6 @@ select
     sum(quantity) as total_qty
 from {{ ref('orders_items') }}
 where order_date >= '1995-01-01' and order_date <= '1995-12-31'
-
-{% if is_incremental() %}
-  and order_date > (select max(order_date) from {{ this }})
-{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

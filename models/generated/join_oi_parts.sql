@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_ord_2_high_1994') }} limit 1)
-
 select
     oi.order_item_key, oi.order_date, oi.customer_key, oi.supplier_key,
     oi.quantity, oi.gross_item_sales_amount,

@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('join_oi_reg_asia_agg_1993') }} limit 1)
-
 select
     c.customer_market_segment_name,
     count(*) as item_count,

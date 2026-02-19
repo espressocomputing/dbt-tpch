@@ -5,11 +5,11 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_filter_old_orders') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_ship_truck_seg_automobile_agg') }} limit 1)
 
 select
     o.order_key, o.order_date, o.order_amount
-from {{ ref('orders') }} o
+from {{ ref('ord_full_scan') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '5-LOW'
     and c.customer_market_segment_name = 'HOUSEHOLD'

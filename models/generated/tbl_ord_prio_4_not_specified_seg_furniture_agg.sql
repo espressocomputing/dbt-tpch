@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_filter_high_value') }} limit 1)
+
 select
     date_trunc('month', o.order_date) as month,
     count(*) as cnt,

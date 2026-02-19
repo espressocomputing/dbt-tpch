@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_agg_date_1997') }} limit 1)
-
 select part_supplier_key, part_key, supplier_key, supplier_cost_amount, supplier_availabe_quantity
 from {{ ref('parts_suppliers') }}
 

@@ -5,14 +5,12 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_cte_customer_stats') }} limit 1)
-
 select
     customer_key,
     count(*) as item_count,
     sum(gross_item_sales_amount) as total_sales,
     avg(discount_percentage) as avg_discount
-from {{ ref('case_discount_tier') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1993-07-01' and order_date <= '1993-12-31'
 group by 1
 

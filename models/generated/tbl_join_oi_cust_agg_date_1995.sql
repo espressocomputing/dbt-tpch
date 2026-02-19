@@ -5,13 +5,13 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('parts_full_scan') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_brand_brand42') }} limit 1)
 
 select
     c.customer_market_segment_name,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('tbl_oi_returned') }} oi
+from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1995-01-01' and oi.order_date <= '1995-12-31'
 group by 1

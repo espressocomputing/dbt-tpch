@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_brand_brand21_1994') }} limit 1)
-
 select
     nation_key as group_key,
     count(*) as cnt, avg(supplier_cost_amount) as avg_cost

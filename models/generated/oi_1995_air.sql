@@ -5,12 +5,10 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_h2_1994_ship') }} limit 1)
-
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('oi_date_h1_1996') }}
+from {{ ref('oi_full_scan') }}
 where order_date >= '1995-01-01' and order_date <= '1995-12-31'
     and ship_mode_name = 'AIR'
 

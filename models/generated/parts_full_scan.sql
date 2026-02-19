@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_africa_1993') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_h2_1994_reg_air') }} limit 1)
 
 select
     part_key, part_name, part_manufacturer_name, part_brand_name,

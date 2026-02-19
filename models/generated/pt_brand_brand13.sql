@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_brand_brand15_1992') }} limit 1)
-
 select
     part_key, part_name, part_type_name, part_size, retail_price
 from {{ ref('parts') }}

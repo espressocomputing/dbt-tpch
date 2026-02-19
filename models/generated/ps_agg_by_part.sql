@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_win_ntile') }} limit 1)
-
 select
     part_key as group_key,
     count(*) as supplier_count, avg(supplier_cost_amount) as avg_cost, sum(supplier_availabe_quantity) as total_avail

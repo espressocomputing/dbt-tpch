@@ -1,9 +1,11 @@
 {{
     config(
-        materialized = 'incremental',
+        materialized = 'table',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:simple', 'rows_sf1:84', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
+
+with _dep as (select 1 from {{ ref('oi_agg_filtered_recent_90d') }} limit 1)
 
 select
     date_trunc('month', o.order_date) as month,
@@ -13,10 +15,6 @@ from {{ ref('orders') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '4-NOT SPECIFIED'
     and c.customer_market_segment_name = 'AUTOMOBILE'
-
-{% if is_incremental() %}
-  and order_date > (select max(order_date) from {{ this }})
-{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

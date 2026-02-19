@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_agg_filtered_recent_90d') }} limit 1)
-
 select
     order_key, order_date, order_amount,
     avg(order_amount) over (order by order_date rows between 999 preceding and current row) as moving_avg_1000,

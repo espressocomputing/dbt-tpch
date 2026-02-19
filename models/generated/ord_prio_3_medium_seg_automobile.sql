@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_seg_machinery_reg_middle_east_agg') }} limit 1)
-
 select
     o.order_key, o.order_date, o.order_amount
 from {{ ref('orders') }} o

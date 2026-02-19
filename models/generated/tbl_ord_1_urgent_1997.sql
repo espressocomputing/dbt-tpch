@@ -5,8 +5,6 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('pt_brand_brand41') }} limit 1)
-
 select
     order_key, order_date, customer_key, order_amount
 from {{ ref('orders') }}

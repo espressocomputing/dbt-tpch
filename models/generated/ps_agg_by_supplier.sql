@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('oi_ship_ship_seg_automobile') }} limit 1)
+with _dep as (select 1 from {{ ref('tbl_oi_agg_month') }} limit 1)
 
 select
     supplier_key as group_key,

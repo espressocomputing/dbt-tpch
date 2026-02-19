@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('pt_brand_brand41') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_1993_machinery') }} limit 1)
 
 select
     o.order_key, o.order_date, o.order_amount,

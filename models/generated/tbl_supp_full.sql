@@ -5,9 +5,9 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('tbl_oi_brand_brand42') }} limit 1)
+with _dep as (select 1 from {{ ref('join_oi_cust_date_1992') }} limit 1)
 
 select supplier_key, supplier_name, nation_key, supplier_account_balance
-from {{ ref('suppliers') }}
+from {{ ref('supp_full_scan') }}
 
 -- sf={{ var('sf', '10') }}

@@ -5,7 +5,7 @@
     )
 }}
 
-with _dep as (select 1 from {{ ref('ord_prio_1_urgent_seg_furniture') }} limit 1)
+with _dep as (select 1 from {{ ref('oi_ship_fob_reg_africa') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date, oi.quantity,
