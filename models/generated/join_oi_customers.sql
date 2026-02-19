@@ -1,0 +1,15 @@
+{{
+    config(
+        materialized = 'view',
+        tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:none', 'rows_sf1:6M', 'cols:8', 'filter:none', 'sf' ~ var('sf', '10')]
+    )
+}}
+
+select
+    oi.order_item_key, oi.order_date, oi.part_key, oi.supplier_key,
+    oi.quantity, oi.gross_item_sales_amount,
+    c.customer_name, c.customer_market_segment_name
+from {{ ref('orders_items') }} oi
+join {{ ref('customers') }} c on oi.customer_key = c.customer_key
+
+-- sf={{ var('sf', '10') }}
