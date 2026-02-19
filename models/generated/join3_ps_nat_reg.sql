@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:parts_suppliers+nations+regions', 'joins:2', 'agg:none', 'rows_sf1:800K', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_brand_brand23_1995') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ from {{ ref('parts_suppliers') }} ps
 join {{ ref('nations') }} n on ps.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 
--- sf={{ var('sf', '10') }}
+) _q

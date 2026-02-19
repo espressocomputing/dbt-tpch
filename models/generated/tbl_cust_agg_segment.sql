@@ -5,10 +5,12 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_1993_household') }} limit 1)
 
 select customer_market_segment_name, count(*) as cnt, avg(customer_account_balance) as avg_balance
 from {{ ref('customers') }}
 group by customer_market_segment_name
 
--- sf={{ var('sf', '10') }}
+) _q

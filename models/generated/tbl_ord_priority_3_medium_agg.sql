@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_1997_household_agg') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ from {{ ref('orders') }}
 where order_priority_code = '3-MEDIUM'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

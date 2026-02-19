@@ -5,9 +5,11 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_ord_prio_2_high_seg_household_agg') }} limit 1)
 
 select part_key, part_name, part_brand_name, part_type_name, part_size, retail_price
 from {{ ref('parts') }}
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:parts', 'joins:0', 'agg:none', 'rows_sf1:20K', 'cols:6', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('join_oi_reg_asia_agg_1993') }} limit 1)
 
 select
@@ -12,4 +14,4 @@ select
 from {{ ref('parts') }}
 where part_size >= 45
 
--- sf={{ var('sf', '10') }}
+) _q

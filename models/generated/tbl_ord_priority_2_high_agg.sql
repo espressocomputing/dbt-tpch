@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('pt_brand_brand33') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ from {{ ref('orders') }}
 where order_priority_code = '2-HIGH'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

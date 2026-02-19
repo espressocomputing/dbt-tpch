@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:none', 'rows_sf1:860K', 'cols:10', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_ship_rail_seg_household') }} limit 1)
 
 select
@@ -14,4 +16,4 @@ select
 from {{ ref('orders_items') }}
 where ship_mode_name = 'RAIL'
 
--- sf={{ var('sf', '10') }}
+) _q

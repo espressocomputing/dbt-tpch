@@ -4,9 +4,9 @@ set -euo pipefail
 # Run dbt models across scale factors.
 #
 # Usage:
-#   ./tools/run.sh                          # SF1 + SF10, proxy target, default warehouse
+#   ./tools/run.sh                          # SF10, direct, medium warehouse
 #   ./tools/run.sh --sf 1                   # SF1 only
-#   ./tools/run.sh --sf 10                  # SF10 only
+#   ./tools/run.sh --sf "1 10"              # SF1 then SF10
 #   ./tools/run.sh --target direct          # Direct Snowflake (no proxy)
 #   ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
 #   ./tools/run.sh --select "tag:generated" # Only generated models
@@ -21,9 +21,9 @@ if [[ -z "${SNOWFLAKE_ACCOUNT:-}" ]]; then
 fi
 
 # Defaults
-SFS="1 10"
+SFS="10"
 TARGET="direct"
-WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_SMALL_GEN1}"
+WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_MEDIUM_GEN1}"
 SELECT=""
 EXTRA_ARGS=""
 NO_DAG=""

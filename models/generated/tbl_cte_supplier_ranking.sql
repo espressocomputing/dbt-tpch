@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with supplier_sales as (
     select
         supplier_key,
@@ -20,4 +22,4 @@ select
 from {{ ref('suppliers') }} s
 join supplier_sales ss on s.supplier_key = ss.supplier_key
 
--- sf={{ var('sf', '10') }}
+) _q

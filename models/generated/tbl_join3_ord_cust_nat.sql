@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_cte_customer_stats') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ from {{ ref('ord_full_scan') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 
--- sf={{ var('sf', '10') }}
+) _q

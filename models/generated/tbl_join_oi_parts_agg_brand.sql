@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('ord_date_h1_1993') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ from {{ ref('orders_items') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

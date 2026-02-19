@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:5K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_h1_1996_air') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ from {{ ref('oi_full_scan') }}
 group by 1
 having count(*) > 500
 
--- sf={{ var('sf', '10') }}
+) _q

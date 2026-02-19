@@ -5,10 +5,12 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('parts_filter_large') }} limit 1)
 
 select order_item_key, order_key, order_date, customer_key, quantity, gross_item_sales_amount
 from {{ ref('orders_items') }}
 where ship_date >= dateadd(day, -90, '1998-12-01')
 
--- sf={{ var('sf', '10') }}
+) _q

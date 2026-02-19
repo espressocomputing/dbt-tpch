@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+parts', 'joins:1', 'agg:simple', 'rows_sf1:25', 'cols:5', 'filter:none', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     p.part_brand_name,
     count(*) as item_count,
@@ -15,4 +17,4 @@ from {{ ref('orders_items') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

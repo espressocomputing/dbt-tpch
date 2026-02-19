@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:simple', 'rows_sf1:35', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     r.region_name,
     date_trunc('year', oi.order_date) as year,
@@ -18,4 +20,4 @@ join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 group by 1, 2
 
--- sf={{ var('sf', '10') }}
+) _q

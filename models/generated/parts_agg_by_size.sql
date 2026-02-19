@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:parts', 'joins:0', 'agg:simple', 'rows_sf1:50', 'cols:4', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_brand_brand55') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ select
 from {{ ref('parts') }}
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:84', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_africa_1993') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ from {{ ref('orders_items') }}
 where ship_mode_name = 'AIR'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

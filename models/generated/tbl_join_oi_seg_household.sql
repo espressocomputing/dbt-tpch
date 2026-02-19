@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount, oi.discount_percentage
@@ -12,4 +14,4 @@ from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where c.customer_market_segment_name = 'HOUSEHOLD'
 
--- sf={{ var('sf', '10') }}
+) _q

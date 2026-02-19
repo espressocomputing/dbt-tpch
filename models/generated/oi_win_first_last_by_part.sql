@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:window', 'rows_sf1:6M', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_seg_automobile_reg_middle_east') }} limit 1)
 
 select
@@ -14,4 +16,4 @@ select
     last_value(gross_item_sales_amount) over (partition by part_key order by order_date rows between unbounded preceding and unbounded following) as last_sale
 from {{ ref('orders_items') }}
 
--- sf={{ var('sf', '10') }}
+) _q

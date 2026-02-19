@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     c.customer_market_segment_name,
     count(*) as item_count,
@@ -14,4 +16,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1994-01-01' and oi.order_date <= '1994-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

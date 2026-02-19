@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date,
     oi.gross_item_sales_amount, oi.quantity
@@ -14,4 +16,4 @@ join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 where r.region_name = 'AMERICA' and oi.order_date >= '1992-01-01' and oi.order_date <= '1992-12-31'
 
--- sf={{ var('sf', '10') }}
+) _q

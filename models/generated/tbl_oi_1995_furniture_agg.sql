@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('cust_agg_by_segment') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ where oi.order_date >= '1995-01-01' and oi.order_date <= '1995-12-31'
     and c.customer_market_segment_name = 'FURNITURE'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations', 'joins:2', 'agg:none', 'rows_sf1:6M', 'cols:6', 'filter:none', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount,
@@ -14,4 +16,4 @@ from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -59,7 +59,13 @@ def config_block(materialized, tags):
 
 
 def model_sql(body, materialized, tags):
-    return config_block(materialized, tags) + "\n" + body
+    # Wrap in a subquery that adds _sf as a real column, so different scale
+    # factors produce different query text (survives comment stripping).
+    wrapped = f"""
+select *, '{{{{ var("sf", "10") }}}}' as _sf
+from ({body}
+) _q"""
+    return config_block(materialized, tags) + "\n" + wrapped
 
 
 # ---------------------------------------------------------------------------
@@ -2651,16 +2657,16 @@ MINIMAL_MODELS = {
 }
 
 
-# === Wrap up: add SF-encoding comment to every model ===
-# This ensures different SF values produce different query text → different hashes
+# === Wrap up ===
 
 def write_model(name, sql, materialized, tags):
-    """Write a single model file with SF-encoding comment."""
+    """Write a single model file."""
     if name in MINIMAL_MODELS:
         tags = tags + ["minimal"]
+    # Force all generated models to table materialization
+    if materialized == "view":
+        materialized = "table"
     full_sql = model_sql(sql, materialized, tags)
-    # Encode SF in a comment so SF1 and SF10 produce different query hashes
-    full_sql += "\n-- sf={{ var('sf', '10') }}\n"
     filepath = os.path.join(OUTPUT_DIR, f"{name}.sql")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, "w") as f:
@@ -2753,11 +2759,10 @@ if __name__ == "__main__":
     for name, sql, materialized, tags in final_models:
         write_model(name, sql, materialized, tags)
 
-    # Stats
-    table_count = sum(1 for _, _, m, _ in final_models if m == "table")
-    view_count = sum(1 for _, _, m, _ in final_models if m == "view")
+    # Stats (after write_model converts views→tables, all non-incremental are tables)
     inc_count = sum(1 for _, _, m, _ in final_models if m == "incremental")
-    print(f"Generated {len(final_models)} models ({table_count} tables, {view_count} views, {inc_count} incremental) in {OUTPUT_DIR}")
+    table_count = len(final_models) - inc_count
+    print(f"Generated {len(final_models)} models ({table_count} tables, {inc_count} incremental) in {OUTPUT_DIR}")
 
     if edges:
         edge_count = sum(len(v) for v in edges.values())

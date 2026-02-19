@@ -5,8 +5,10 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select part_brand_name, count(*) as cnt, avg(retail_price) as avg_price
 from {{ ref('parts_full_scan') }}
 group by part_brand_name
 
--- sf={{ var('sf', '10') }}
+) _q

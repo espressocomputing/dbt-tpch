@@ -5,8 +5,10 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select supplier_key, count(*) as items_supplied, sum(gross_item_sales_amount) as total_sales
 from {{ ref('orders_items') }}
 group by supplier_key
 
--- sf={{ var('sf', '10') }}
+) _q

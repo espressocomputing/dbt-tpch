@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:none', 'rows_sf1:180K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_h2_1996_machinery') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1995-01-01' and oi.order_date <= '1995-12-31'
     and c.customer_market_segment_name = 'MACHINERY'
 
--- sf={{ var('sf', '10') }}
+) _q

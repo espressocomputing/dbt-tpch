@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     date_trunc('month', o.order_date) as month,
     count(*) as cnt,
@@ -15,4 +17,4 @@ where o.order_priority_code = '4-NOT SPECIFIED'
     and c.customer_market_segment_name = 'MACHINERY'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

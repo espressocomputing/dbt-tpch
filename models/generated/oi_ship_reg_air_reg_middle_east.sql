@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:none', 'rows_sf1:170K', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_1992_ship') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ join {{ ref('regions') }} r on n.region_key = r.region_key
 where oi.ship_mode_name = 'REG AIR'
     and r.region_name = 'MIDDLE EAST'
 
--- sf={{ var('sf', '10') }}
+) _q

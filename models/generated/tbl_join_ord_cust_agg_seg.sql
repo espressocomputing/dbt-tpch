@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     c.customer_market_segment_name,
     count(*) as order_count,
@@ -13,4 +15,4 @@ from {{ ref('orders') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

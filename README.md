@@ -22,9 +22,10 @@ Sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROL
 
 ```bash
 ./tools/run.sh --sf 1 --select "tag:minimal"       # minimal smoke test
-./tools/run.sh                                      # SF1 + SF10, direct
+./tools/run.sh                                      # SF10, direct, medium warehouse
 ./tools/run.sh --sf 1                               # SF1 only
-./tools/run.sh --sf 10 --target proxy               # SF10 via proxy
+./tools/run.sh --sf "1 10"                          # SF1 then SF10
+./tools/run.sh --target proxy                       # via proxy
 ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
 ./tools/run.sh --select "tag:generated"             # only generated models
 ./tools/run.sh --no-dag                             # regenerate flat models, then run
@@ -45,7 +46,7 @@ uv run dbt run --select "tag:minimal"             # minimal smoke test
 
 ## Warehouse
 
-Defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1`. Override:
+Defaults to `TPCH_WH_BENCHMARK_MEDIUM_GEN1`. Override:
 
 ```bash
 DBT_SNOWFLAKE_WAREHOUSE=TPCH_WH_BENCHMARK_LARGE_GEN1 uv run dbt run

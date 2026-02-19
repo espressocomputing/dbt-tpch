@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_h2_1997_reg_air') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ where oi.ship_mode_name = 'TRUCK'
     and c.customer_market_segment_name = 'MACHINERY'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

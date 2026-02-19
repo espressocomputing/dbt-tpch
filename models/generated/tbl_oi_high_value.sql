@@ -5,8 +5,10 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select order_item_key, order_key, customer_key, part_key, gross_item_sales_amount
 from {{ ref('oi_full_scan') }}
 where gross_item_sales_amount > 50000
 
--- sf={{ var('sf', '10') }}
+) _q

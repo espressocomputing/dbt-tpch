@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:none', 'rows_sf1:240K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_agg_ship_mode') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ join {{ ref('regions') }} r on n.region_key = r.region_key
 where c.customer_market_segment_name = 'HOUSEHOLD'
     and r.region_name = 'EUROPE'
 
--- sf={{ var('sf', '10') }}
+) _q

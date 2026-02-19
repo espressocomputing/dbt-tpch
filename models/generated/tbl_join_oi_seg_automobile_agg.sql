@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,
@@ -14,4 +16,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where c.customer_market_segment_name = 'AUTOMOBILE'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

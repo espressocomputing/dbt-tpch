@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:multi', 'rows_sf1:7', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with yearly as (
     select
         date_trunc('year', order_date) as year,
@@ -23,4 +25,4 @@ select
     total_sales - lag(total_sales) over (order by year) as yoy_change
 from yearly
 
--- sf={{ var('sf', '10') }}
+) _q

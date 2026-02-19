@@ -5,10 +5,12 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_agg_part') }} limit 1)
 
 select customer_key, customer_name, customer_account_balance
 from {{ ref('customers') }}
 where customer_account_balance > 9000
 
--- sf={{ var('sf', '10') }}
+) _q

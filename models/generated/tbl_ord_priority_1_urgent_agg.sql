@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     date_trunc('month', order_date) as month,
     count(*) as cnt,
@@ -13,4 +15,4 @@ from {{ ref('ord_full_scan') }}
 where order_priority_code = '1-URGENT'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

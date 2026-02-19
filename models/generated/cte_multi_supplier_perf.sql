@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+suppliers', 'joins:1', 'agg:multi', 'rows_sf1:10K', 'cols:10', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with supplier_items as (
     select
         supplier_key,
@@ -30,4 +32,4 @@ select
     rank() over (order by return_rate) as quality_rank
 from supplier_detail
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:simple', 'rows_sf1:50K', 'cols:5', 'filter:heavy', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with customer_spend as (
     select
         customer_key,
@@ -20,4 +22,4 @@ from {{ ref('customers') }} c
 join customer_spend cs on c.customer_key = cs.customer_key
 where cs.total_spend > 1000000
 
--- sf={{ var('sf', '10') }}
+) _q

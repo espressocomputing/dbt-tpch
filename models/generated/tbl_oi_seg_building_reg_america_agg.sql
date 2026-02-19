@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     date_trunc('year', oi.order_date) as year,
     count(*) as item_count,
@@ -17,4 +19,4 @@ where c.customer_market_segment_name = 'BUILDING'
     and r.region_name = 'AMERICA'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

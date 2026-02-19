@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders', 'joins:0', 'agg:none', 'rows_sf1:220K', 'cols:5', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_brand_brand41') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ select
 from {{ ref('orders') }}
 where order_date >= '1994-01-01' and order_date <= '1994-12-31'
 
--- sf={{ var('sf', '10') }}
+) _q

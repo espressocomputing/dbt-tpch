@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:customers+orders+parts+suppliers+orders_items+parts_suppliers', 'joins:0', 'agg:simple', 'rows_sf1:6', 'cols:2', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_filter_air_ship') }} limit 1)
 
 select 'customers' as entity, count(*) as cnt from {{ ref('customers') }}
@@ -19,4 +21,4 @@ select 'order_items', count(*) from {{ ref('orders_items') }}
 union all
 select 'parts_suppliers', count(*) from {{ ref('parts_suppliers') }}
 
--- sf={{ var('sf', '10') }}
+) _q

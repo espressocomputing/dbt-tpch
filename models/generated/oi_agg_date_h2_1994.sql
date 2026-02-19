@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:100K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_join_ord_cust_agg_seg') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ from {{ ref('orders_items') }}
 where order_date >= '1994-07-01' and order_date <= '1994-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

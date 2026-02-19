@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('ord_agg_by_customer') }} limit 1)
 
 select
@@ -19,4 +21,4 @@ where c.customer_market_segment_name = 'MACHINERY'
     and r.region_name = 'MIDDLE EAST'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

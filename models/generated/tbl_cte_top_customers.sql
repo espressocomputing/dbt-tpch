@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with customer_spend as (
     select
         customer_key,
@@ -20,4 +22,4 @@ from {{ ref('customers') }} c
 join customer_spend cs on c.customer_key = cs.customer_key
 where cs.total_spend > 1000000
 
--- sf={{ var('sf', '10') }}
+) _q

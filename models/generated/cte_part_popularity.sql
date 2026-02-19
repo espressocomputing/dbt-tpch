@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+parts', 'joins:1', 'agg:multi', 'rows_sf1:200K', 'cols:9', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with part_orders as (
     select
         part_key,
@@ -22,4 +24,4 @@ select
 from {{ ref('parts') }} p
 join part_orders po on p.part_key = po.part_key
 
--- sf={{ var('sf', '10') }}
+) _q

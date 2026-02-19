@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_1997_household_agg') }} limit 1)
 
 select
@@ -18,4 +20,4 @@ join {{ ref('regions') }} r on n.region_key = r.region_key
 where r.region_name = 'EUROPE'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

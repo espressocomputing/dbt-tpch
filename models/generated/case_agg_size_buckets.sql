@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders', 'joins:0', 'agg:simple', 'rows_sf1:5', 'cols:4', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     case
         when order_amount < 10000 then 'tiny'
@@ -19,4 +21,4 @@ select
 from {{ ref('orders') }}
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -5,8 +5,10 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select order_item_key, order_key, customer_key, quantity, gross_item_sales_amount, return_status_code
 from {{ ref('orders_items') }}
 where return_status_code = 'R'
 
--- sf={{ var('sf', '10') }}
+) _q

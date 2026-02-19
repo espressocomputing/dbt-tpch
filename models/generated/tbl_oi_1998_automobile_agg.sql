@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('ord_filter_high_priority') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ where oi.order_date >= '1998-01-01' and oi.order_date <= '1998-12-01'
     and c.customer_market_segment_name = 'AUTOMOBILE'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

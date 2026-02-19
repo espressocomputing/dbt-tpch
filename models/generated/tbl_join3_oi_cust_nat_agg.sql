@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     n.nation_name,
     count(*) as item_count,
@@ -14,4 +16,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

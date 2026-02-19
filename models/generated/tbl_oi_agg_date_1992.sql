@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     customer_key,
     count(*) as item_count,
@@ -14,4 +16,4 @@ from {{ ref('orders_items') }}
 where order_date >= '1992-01-01' and order_date <= '1992-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

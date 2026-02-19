@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1996') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ from {{ ref('orders_items') }}
 where order_date >= '1995-01-01' and order_date <= '1995-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

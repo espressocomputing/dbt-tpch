@@ -1,13 +1,15 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders', 'joins:0', 'agg:none', 'rows_sf1:300K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     order_key, order_date, customer_key, order_amount
 from {{ ref('orders') }}
 where order_priority_code = '5-LOW'
 
--- sf={{ var('sf', '10') }}
+) _q

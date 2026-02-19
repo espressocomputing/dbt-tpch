@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders', 'joins:0', 'agg:none', 'rows_sf1:300K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_cust_high_bal') }} limit 1)
 
 select
@@ -12,4 +14,4 @@ select
 from {{ ref('orders') }}
 where order_priority_code = '3-MEDIUM'
 
--- sf={{ var('sf', '10') }}
+) _q

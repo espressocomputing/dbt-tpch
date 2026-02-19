@@ -39,5 +39,8 @@ models:
       generated:
         schema: generated
 
+on-run-start:
+  - "ALTER SESSION SET USE_CACHED_RESULT = FALSE"
+
 query-comment:
   append: True

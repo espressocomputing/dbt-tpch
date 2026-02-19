@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:window', 'rows_sf1:6M', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_recent') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ select
     lead(gross_item_sales_amount) over (partition by customer_key order by order_date) as next_sales
 from {{ ref('oi_full_scan') }}
 
--- sf={{ var('sf', '10') }}
+) _q

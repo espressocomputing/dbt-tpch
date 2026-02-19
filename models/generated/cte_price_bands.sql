@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+parts', 'joins:1', 'agg:simple', 'rows_sf1:200K', 'cols:8', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_join_oi_seg_household_agg') }} limit 1),
 price_stats as (
     select
@@ -28,4 +30,4 @@ select
 from {{ ref('parts') }} p
 join price_stats ps on p.part_key = ps.part_key
 
--- sf={{ var('sf', '10') }}
+) _q

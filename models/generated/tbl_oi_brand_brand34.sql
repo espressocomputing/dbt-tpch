@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_join_oi_parts_agg_brand') }} limit 1)
 
 select
@@ -14,4 +16,4 @@ from {{ ref('orders_items') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#34'
 
--- sf={{ var('sf', '10') }}
+) _q

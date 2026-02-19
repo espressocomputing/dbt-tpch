@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:none', 'rows_sf1:240K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date,
     oi.gross_item_sales_amount, oi.quantity
@@ -15,4 +17,4 @@ join {{ ref('regions') }} r on n.region_key = r.region_key
 where c.customer_market_segment_name = 'AUTOMOBILE'
     and r.region_name = 'ASIA'
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders', 'joins:1', 'agg:none', 'rows_sf1:500K', 'cols:6', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     o1.order_key as order_key_1,
     o2.order_key as order_key_2,
@@ -18,4 +20,4 @@ join {{ ref('orders') }} o2
     and o2.order_date > o1.order_date
     and o2.order_date <= dateadd(day, 30, o1.order_date)
 
--- sf={{ var('sf', '10') }}
+) _q

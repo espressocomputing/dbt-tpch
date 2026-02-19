@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:multi', 'rows_sf1:5', 'cols:7', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with customer_revenue as (
     select customer_key, sum(gross_item_sales_amount) as revenue
     from {{ ref('orders_items') }}
@@ -32,4 +34,4 @@ select
     segment_revenue / nullif(sum(segment_revenue) over (), 0) as revenue_share
 from segment_stats
 
--- sf={{ var('sf', '10') }}
+) _q

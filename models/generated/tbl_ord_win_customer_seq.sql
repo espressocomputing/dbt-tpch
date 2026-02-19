@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     order_key, customer_key, order_date, order_amount,
     row_number() over (partition by customer_key order by order_date) as order_seq,
@@ -14,4 +16,4 @@ from {{ ref('orders') }}
   where order_date > (select max(order_date) from {{ this }})
 {% endif %}
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:none', 'rows_sf1:1.5M', 'cols:5', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('ord_prio_4_not_specified_seg_furniture') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ select
 from {{ ref('orders') }} o
 left join {{ ref('customers') }} c on o.customer_key = c.customer_key
 
--- sf={{ var('sf', '10') }}
+) _q

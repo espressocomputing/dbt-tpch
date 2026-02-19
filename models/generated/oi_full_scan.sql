@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:none', 'rows_sf1:6M', 'cols:24', 'filter:none', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     order_item_key, order_key, order_date, customer_key, order_status_code,
     part_key, supplier_key, return_status_code, order_line_number,
@@ -14,4 +16,4 @@ select
     item_discount_amount, tax_rate, item_tax_amount, net_item_sales_amount
 from {{ ref('orders_items') }}
 
--- sf={{ var('sf', '10') }}
+) _q

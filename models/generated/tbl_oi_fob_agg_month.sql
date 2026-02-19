@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_agg_by_date') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ from {{ ref('orders_items') }}
 where ship_mode_name = 'FOB'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

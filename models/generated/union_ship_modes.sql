@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:7', 'cols:3', 'filter:light', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select 'AIR' as ship_mode, count(*) as cnt, sum(gross_item_sales_amount) as total
 from {{ ref('orders_items') }} where ship_mode_name = 'AIR'
 union all
@@ -26,4 +28,4 @@ union all
 select 'FOB', count(*), sum(gross_item_sales_amount)
 from {{ ref('orders_items') }} where ship_mode_name = 'FOB'
 
--- sf={{ var('sf', '10') }}
+) _q

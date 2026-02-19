@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:simple', 'rows_sf1:12', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,
@@ -17,4 +19,4 @@ where r.region_name = 'MIDDLE EAST'
     and oi.order_date >= '1995-01-01' and oi.order_date <= '1995-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

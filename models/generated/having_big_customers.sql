@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:50K', 'cols:3', 'filter:heavy', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     customer_key,
     count(*) as order_count,
@@ -13,4 +15,4 @@ from {{ ref('orders_items') }}
 group by 1
 having count(*) > 100
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:simple', 'rows_sf1:25', 'cols:4', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     c.nation_key,
     count(*) as order_count,
@@ -14,4 +16,4 @@ from {{ ref('orders') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

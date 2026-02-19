@@ -5,7 +5,9 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select part_supplier_key, part_key, supplier_key, supplier_cost_amount, supplier_availabe_quantity
 from {{ ref('parts_suppliers') }}
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:none', 'rows_sf1:60K', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_seg_building_reg_asia') }} limit 1)
 
 select
@@ -14,4 +16,4 @@ join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '1-URGENT'
     and c.customer_market_segment_name = 'FURNITURE'
 
--- sf={{ var('sf', '10') }}
+) _q

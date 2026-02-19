@@ -5,8 +5,10 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select date_trunc('month', order_date) as month, count(*) as cnt, sum(gross_item_sales_amount) as total_sales, avg(discount_percentage) as avg_discount
 from {{ ref('orders_items') }}
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

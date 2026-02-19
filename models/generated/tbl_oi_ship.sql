@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_brand_brand13_1997') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ select
 from {{ ref('orders_items') }}
 where ship_mode_name = 'SHIP'
 
--- sf={{ var('sf', '10') }}
+) _q

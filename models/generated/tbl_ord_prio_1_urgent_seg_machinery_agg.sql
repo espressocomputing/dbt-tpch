@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_cust_high_bal') }} limit 1)
 
 select
@@ -17,4 +19,4 @@ where o.order_priority_code = '1-URGENT'
     and c.customer_market_segment_name = 'MACHINERY'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

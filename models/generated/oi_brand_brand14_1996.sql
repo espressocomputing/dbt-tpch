@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+parts', 'joins:1', 'agg:none', 'rows_sf1:35K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_brand_brand25_1994') }} limit 1)
 
 select
@@ -15,4 +17,4 @@ join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#14'
     and oi.order_date >= '1996-01-01' and oi.order_date <= '1996-12-31'
 
--- sf={{ var('sf', '10') }}
+) _q

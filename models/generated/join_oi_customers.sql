@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:none', 'rows_sf1:6M', 'cols:8', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date, oi.part_key, oi.supplier_key,
     oi.quantity, oi.gross_item_sales_amount,
@@ -12,4 +14,4 @@ select
 from {{ ref('oi_full_scan') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 
--- sf={{ var('sf', '10') }}
+) _q

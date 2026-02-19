@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+parts+suppliers+nations', 'joins:3', 'agg:none', 'rows_sf1:6M', 'cols:8', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('join_oi_supp_reg_middle_east') }} limit 1)
 
 select
@@ -18,4 +20,4 @@ join {{ ref('parts') }} p on oi.part_key = p.part_key
 join {{ ref('suppliers') }} s on oi.supplier_key = s.supplier_key
 join {{ ref('nations') }} n on s.nation_key = n.nation_key
 
--- sf={{ var('sf', '10') }}
+) _q

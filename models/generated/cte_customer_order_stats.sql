@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:simple', 'rows_sf1:150K', 'cols:10', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with order_stats as (
     select
         customer_key,
@@ -25,4 +27,4 @@ select
 from {{ ref('customers') }} c
 join order_stats os on c.customer_key = os.customer_key
 
--- sf={{ var('sf', '10') }}
+) _q

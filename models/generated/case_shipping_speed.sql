@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:none', 'rows_sf1:6M', 'cols:8', 'filter:none', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     order_item_key,
     order_date, ship_date, receipt_date,
@@ -19,4 +21,4 @@ select
     gross_item_sales_amount
 from {{ ref('orders_items') }}
 
--- sf={{ var('sf', '10') }}
+) _q

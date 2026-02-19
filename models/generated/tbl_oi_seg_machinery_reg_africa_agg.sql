@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('pt_brand_brand21') }} limit 1)
 
 select
@@ -19,4 +21,4 @@ where c.customer_market_segment_name = 'MACHINERY'
     and r.region_name = 'AFRICA'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

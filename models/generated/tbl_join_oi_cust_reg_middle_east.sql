@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_h2_1996_machinery') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 where r.region_name = 'MIDDLE EAST'
 
--- sf={{ var('sf', '10') }}
+) _q

@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:100K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     customer_key,
     count(*) as item_count,
@@ -14,4 +16,4 @@ from {{ ref('orders_items') }}
 where order_date >= '1993-01-01' and order_date <= '1993-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

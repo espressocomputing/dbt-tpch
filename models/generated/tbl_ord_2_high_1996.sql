@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_ship_reg_air_reg_middle_east') }} limit 1)
 
 select
@@ -13,4 +15,4 @@ from {{ ref('orders') }}
 where order_priority_code = '2-HIGH'
     and order_date >= '1996-01-01' and order_date <= '1996-12-31'
 
--- sf={{ var('sf', '10') }}
+) _q

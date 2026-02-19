@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_africa_1993') }} limit 1)
 
 select
@@ -16,4 +18,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1992-01-01' and oi.order_date <= '1992-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

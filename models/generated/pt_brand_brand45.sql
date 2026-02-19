@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:parts', 'joins:0', 'agg:none', 'rows_sf1:8K', 'cols:5', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_brand_brand21_1994') }} limit 1)
 
 select
@@ -12,4 +14,4 @@ select
 from {{ ref('parts_full_scan') }}
 where part_brand_name = 'Brand#45'
 
--- sf={{ var('sf', '10') }}
+) _q

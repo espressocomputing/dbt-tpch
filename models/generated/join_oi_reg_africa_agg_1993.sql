@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:simple', 'rows_sf1:12', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('oi_agg_by_date') }} limit 1)
 
 select
@@ -19,4 +21,4 @@ where r.region_name = 'AFRICA'
     and oi.order_date >= '1993-01-01' and oi.order_date <= '1993-12-31'
 group by 1
 
--- sf={{ var('sf', '10') }}
+) _q

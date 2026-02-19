@@ -1,10 +1,12 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         tags = ['generated', 'scan:orders_items+customers', 'joins:1', 'agg:none', 'rows_sf1:170K', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 with _dep as (select 1 from {{ ref('tbl_oi_seg_machinery_reg_middle_east_agg') }} limit 1)
 
 select
@@ -14,4 +16,4 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.ship_mode_name = 'MAIL'
     and c.customer_market_segment_name = 'FURNITURE'
 
--- sf={{ var('sf', '10') }}
+) _q

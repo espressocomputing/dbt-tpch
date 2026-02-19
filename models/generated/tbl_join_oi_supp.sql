@@ -5,6 +5,8 @@
     )
 }}
 
+select *, '{{ var("sf", "10") }}' as _sf
+from (
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount,
@@ -12,4 +14,4 @@ select
 from {{ ref('oi_full_scan') }} oi
 join {{ ref('suppliers') }} s on oi.supplier_key = s.supplier_key
 
--- sf={{ var('sf', '10') }}
+) _q
