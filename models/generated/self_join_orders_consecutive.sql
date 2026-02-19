@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join_oi_reg_middle_east_agg_1996') }} limit 1)
+
 select
     o1.order_key as order_key_1,
     o2.order_key as order_key_2,

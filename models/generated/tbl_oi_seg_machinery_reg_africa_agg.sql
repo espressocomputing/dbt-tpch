@@ -1,9 +1,11 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:simple', 'rows_sf1:7', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
+
+with _dep as (select 1 from {{ ref('oi_ship_ship_reg_america') }} limit 1)
 
 select
     date_trunc('year', oi.order_date) as year,
@@ -15,6 +17,10 @@ join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 where c.customer_market_segment_name = 'MACHINERY'
     and r.region_name = 'AFRICA'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

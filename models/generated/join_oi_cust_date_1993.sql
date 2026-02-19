@@ -8,7 +8,7 @@
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount,
     c.customer_name, c.customer_market_segment_name
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_filter_rail_ship') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.order_date >= '1993-01-01' and oi.order_date <= '1993-12-31'
 

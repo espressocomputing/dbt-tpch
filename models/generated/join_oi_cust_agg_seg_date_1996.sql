@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('pt_brand_brand54') }} limit 1)
+
 select
     c.customer_market_segment_name,
     count(*) as item_count,

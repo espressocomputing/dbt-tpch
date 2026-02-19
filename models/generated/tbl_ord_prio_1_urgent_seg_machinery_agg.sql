@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders+customers', 'joins:1', 'agg:simple', 'rows_sf1:84', 'cols:3', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -13,6 +13,10 @@ from {{ ref('orders') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '1-URGENT'
     and c.customer_market_segment_name = 'MACHINERY'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

@@ -6,7 +6,7 @@
 }}
 
 select part_key, count(*) as supplier_count, avg(supplier_cost_amount) as avg_cost
-from {{ ref('parts_suppliers') }}
+from {{ ref('ps_full_scan') }}
 group by part_key
 
 -- sf={{ var('sf', '10') }}

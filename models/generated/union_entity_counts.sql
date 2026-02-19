@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1995') }} limit 1)
+
 select 'customers' as entity, count(*) as cnt from {{ ref('customers') }}
 union all
 select 'orders', count(*) from {{ ref('orders') }}

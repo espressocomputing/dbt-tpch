@@ -1,9 +1,11 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:none', 'rows_sf1:6M', 'cols:6', 'filter:none', 'sf' ~ var('sf', '10')]
     )
 }}
+
+with _dep as (select 1 from {{ ref('oi_win_rank_date_1995') }} limit 1)
 
 select
     oi.order_item_key, oi.order_date,
@@ -14,5 +16,8 @@ from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
+{% if is_incremental() %}
+  where order_date > (select max(order_date) from {{ this }})
+{% endif %}
 
 -- sf={{ var('sf', '10') }}

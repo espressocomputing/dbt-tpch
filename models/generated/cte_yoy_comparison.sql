@@ -5,7 +5,8 @@
     )
 }}
 
-with yearly as (
+with _dep as (select 1 from {{ ref('oi_ship_truck_seg_furniture') }} limit 1),
+yearly as (
     select
         date_trunc('year', order_date) as year,
         count(*) as item_count,

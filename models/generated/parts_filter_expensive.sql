@@ -7,7 +7,7 @@
 
 select
     part_key, part_name, part_brand_name, part_type_name, part_size, retail_price
-from {{ ref('parts') }}
+from {{ ref('parts_filter_large') }}
 where retail_price > 1900
 
 -- sf={{ var('sf', '10') }}

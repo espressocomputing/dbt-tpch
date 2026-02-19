@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_agg_by_date') }} limit 1)
+
 select
     order_item_key, order_key, order_date, customer_key,
     part_key, supplier_key, quantity, base_price,

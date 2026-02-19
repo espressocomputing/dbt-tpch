@@ -8,7 +8,7 @@
 select
     oi.order_item_key, oi.order_date, oi.quantity,
     oi.gross_item_sales_amount
-from {{ ref('orders_items') }} oi
+from {{ ref('case_discount_tier') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#25'
     and oi.order_date >= '1992-01-01' and oi.order_date <= '1992-12-31'

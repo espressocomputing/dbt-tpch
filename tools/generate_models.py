@@ -2,13 +2,14 @@
 """Generate ~1000 dbt models with varied query characteristics for proxy benchmarking.
 
 Usage:
-    python tools/generate_models.py
+    python tools/generate_models.py              # with DAG (default)
+    python tools/generate_models.py --no-dag     # flat fan-out (no DAG)
+    python tools/generate_models.py --seed 123   # custom seed
 
 Idempotent: deletes models/generated/ and recreates from scratch.
-All generated models reference existing ODS-layer tables.
+Generated models reference ODS tables (and each other when DAG is enabled).
 
 Each model is tagged with technical properties describing its query shape:
-  - op:ctas / op:create_view — write path (table) vs read-only (view)
   - scan:<table> — which ODS table(s) are scanned
   - joins:<n> — number of joins in the query
   - agg:<type> — none, simple (GROUP BY), window, or multi (both)
@@ -17,6 +18,7 @@ Each model is tagged with technical properties describing its query shape:
   - filter:<type> — none, light (<50% selectivity), heavy (>90% reduction)
 """
 
+import argparse
 import os
 import shutil
 import textwrap
@@ -2596,11 +2598,13 @@ group by 1
         ])
 
 
-# === Sample subset for quick smoke tests ===
+# === Minimal subset for quick smoke tests ===
 # ~25 models covering every key dimension: tables/views, join counts, agg types,
 # big/small scans, filters, window funcs, CTEs, unions, subqueries.
-# Run with: uv run dbt run --select "tag:sample" --vars '{"sf":"1"}'
-SAMPLE_MODELS = {
+# Run with: uv run dbt run --select "tag:minimal" --vars '{"sf":"1"}'
+# NOTE: these models are excluded from DAG edge injection so they always work
+# standalone without needing a prior full run.
+MINIMAL_MODELS = {
     # views, 0-join
     "oi_full_scan",             # view, scan:orders_items, 0 joins, no agg, 6M rows, no filter
     "oi_filter_recent_90d",     # view, filtered scan, light filter
@@ -2640,8 +2644,8 @@ SAMPLE_MODELS = {
 
 def write_model(name, sql, materialized, tags):
     """Write a single model file with SF-encoding comment."""
-    if name in SAMPLE_MODELS:
-        tags = tags + ["sample"]
+    if name in MINIMAL_MODELS:
+        tags = tags + ["minimal"]
     full_sql = model_sql(sql, materialized, tags)
     # Encode SF in a comment so SF1 and SF10 produce different query hashes
     full_sql += "\n-- sf={{ var('sf', '10') }}\n"
@@ -2651,15 +2655,26 @@ def write_model(name, sql, materialized, tags):
         f.write(full_sql)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Generate dbt models for benchmarking")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
+    parser.add_argument("--p-source", type=float, default=0.25,
+                        help="Probability of Type A edge — source substitution (default: 0.25)")
+    parser.add_argument("--p-dep", type=float, default=0.35,
+                        help="Probability of Type B edge — existence dependency (default: 0.35)")
+    parser.add_argument("--no-dag", action="store_true",
+                        help="Skip DAG construction (flat fan-out, original behavior)")
+    parser.add_argument("--no-incremental", action="store_true",
+                        help="Skip incremental conversion")
+    return parser.parse_args()
+
+
 # ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    # Idempotent: wipe and recreate
-    if os.path.exists(OUTPUT_DIR):
-        shutil.rmtree(OUTPUT_DIR)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    args = parse_args()
 
     # Check for duplicate names
     names = [m[0] for m in models]
@@ -2668,19 +2683,69 @@ if __name__ == "__main__":
         print(f"ERROR: duplicate model names: {set(dupes)}")
         exit(1)
 
-    for name, sql, materialized, tags in models:
+    final_models = list(models)
+    edges = {}
+
+    if not args.no_dag:
+        from dag_builder import build_dag, convert_to_incremental, generate_mermaid
+
+        # Split minimal models out — they don't get DAG edges
+        minimal_indices = {i for i, (n, _, _, _) in enumerate(final_models) if n in MINIMAL_MODELS}
+        dag_models = [m for i, m in enumerate(final_models) if i not in minimal_indices]
+        kept_models = [(i, m) for i, m in enumerate(final_models) if i in minimal_indices]
+
+        # Build DAG on non-minimal models
+        dag_models, edges = build_dag(dag_models, seed=args.seed,
+                                      p_source=args.p_source, p_dep=args.p_dep)
+
+        if not args.no_incremental:
+            dag_models = convert_to_incremental(dag_models, seed=args.seed)
+
+        # Merge back: put minimal models in their original positions
+        final_models = []
+        dag_iter = iter(dag_models)
+        kept_dict = dict(kept_models)
+        for i in range(len(models)):
+            if i in kept_dict:
+                final_models.append(kept_dict[i])
+            else:
+                final_models.append(next(dag_iter))
+
+        # Generate mermaid diagram
+        mermaid_path = os.path.join(OUTPUT_DIR, "DAG.md")
+        generate_mermaid(edges, mermaid_path)
+        print(f"DAG diagram written to {mermaid_path}")
+
+    # Idempotent: wipe and recreate
+    if os.path.exists(OUTPUT_DIR):
+        shutil.rmtree(OUTPUT_DIR)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    if not args.no_dag:
+        # Re-generate mermaid after wipe
+        from dag_builder import generate_mermaid
+        mermaid_path = os.path.join(OUTPUT_DIR, "DAG.md")
+        generate_mermaid(edges, mermaid_path)
+
+    for name, sql, materialized, tags in final_models:
         write_model(name, sql, materialized, tags)
 
     # Stats
-    table_count = sum(1 for _, _, m, _ in models if m == "table")
-    view_count = sum(1 for _, _, m, _ in models if m == "view")
-    print(f"Generated {len(models)} models ({table_count} tables, {view_count} views) in {OUTPUT_DIR}")
+    table_count = sum(1 for _, _, m, _ in final_models if m == "table")
+    view_count = sum(1 for _, _, m, _ in final_models if m == "view")
+    inc_count = sum(1 for _, _, m, _ in final_models if m == "incremental")
+    print(f"Generated {len(final_models)} models ({table_count} tables, {view_count} views, {inc_count} incremental) in {OUTPUT_DIR}")
+
+    if edges:
+        edge_count = sum(len(v) for v in edges.values())
+        models_with_edges = sum(1 for v in edges.values() if v)
+        print(f"DAG: {models_with_edges} models with upstream edges, {edge_count} edges total")
 
     # Tag distribution
     from collections import Counter
     join_counts = Counter()
     agg_counts = Counter()
-    for _, _, _, tags in models:
+    for _, _, _, tags in final_models:
         for t in tags:
             if t.startswith("joins:"):
                 join_counts[t] += 1

@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_ship_fob_reg_africa') }} limit 1)
+
 select
     p.part_brand_name,
     count(*) as item_count,

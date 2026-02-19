@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_seg_furniture_reg_asia') }} limit 1)
+
 select
     p.part_type_name,
     count(*) as item_count,

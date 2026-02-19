@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_join4_oi_cust_nat_reg') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_status_code,
     order_priority_code, order_amount

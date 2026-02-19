@@ -8,7 +8,7 @@
 select
     order_clerk_name as group_key,
     count(*) as cnt, sum(order_amount) as total_amount
-from {{ ref('orders') }}
+from {{ ref('ord_date_1994') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

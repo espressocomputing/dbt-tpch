@@ -8,7 +8,7 @@
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('orders_items') }}
+from {{ ref('tbl_oi_rail') }}
 where order_date >= '1993-01-01' and order_date <= '1993-12-31'
     and ship_mode_name = 'TRUCK'
 

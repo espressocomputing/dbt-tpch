@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1996_automobile_agg') }} limit 1)
+
 select
     s.supplier_key, s.supplier_name, s.supplier_account_balance,
     n.nation_name, r.region_name

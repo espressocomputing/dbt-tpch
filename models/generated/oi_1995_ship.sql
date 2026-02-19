@@ -5,10 +5,12 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_priority_1_urgent_agg') }} limit 1)
+
 select
     order_item_key, order_date, customer_key, quantity,
     gross_item_sales_amount
-from {{ ref('orders_items') }}
+from {{ ref('oi_filter_rail_ship') }}
 where order_date >= '1995-01-01' and order_date <= '1995-12-31'
     and ship_mode_name = 'SHIP'
 

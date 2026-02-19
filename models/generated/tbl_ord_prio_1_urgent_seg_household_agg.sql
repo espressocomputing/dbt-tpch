@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1992') }} limit 1)
+
 select
     date_trunc('month', o.order_date) as month,
     count(*) as cnt,

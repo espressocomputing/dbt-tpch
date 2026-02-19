@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:100K', 'cols:4', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -12,6 +12,10 @@ select
     sum(quantity) as total_qty
 from {{ ref('orders_items') }}
 where order_date >= '1997-01-01' and order_date <= '1997-12-31'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

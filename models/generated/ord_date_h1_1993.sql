@@ -8,7 +8,7 @@
 select
     order_key, order_date, customer_key, order_status_code,
     order_amount
-from {{ ref('orders') }}
+from {{ ref('ord_date_1993') }}
 where order_date >= '1993-01-01' and order_date <= '1993-06-30'
 
 -- sf={{ var('sf', '10') }}

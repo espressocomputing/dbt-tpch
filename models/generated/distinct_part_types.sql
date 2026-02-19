@@ -5,6 +5,6 @@
     )
 }}
 
-select distinct part_type_name from {{ ref('parts') }}
+select distinct part_type_name from {{ ref('parts_filter_brass') }}
 
 -- sf={{ var('sf', '10') }}

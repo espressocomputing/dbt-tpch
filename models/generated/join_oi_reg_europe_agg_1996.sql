@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join_oi_reg_middle_east_agg_1995') }} limit 1)
+
 select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,

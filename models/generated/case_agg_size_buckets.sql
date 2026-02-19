@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_ship_air_reg_america') }} limit 1)
+
 select
     case
         when order_amount < 10000 then 'tiny'
@@ -16,7 +18,7 @@ select
     count(*) as order_count,
     sum(order_amount) as total_amount,
     avg(order_amount) as avg_amount
-from {{ ref('orders') }}
+from {{ ref('ord_priority_4_not_specified') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

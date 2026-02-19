@@ -6,7 +6,7 @@
 }}
 
 select date_trunc('month', order_date) as month, count(*) as cnt, sum(order_amount) as total_amount
-from {{ ref('orders') }}
+from {{ ref('ord_date_1998') }}
 group by 1
 
 -- sf={{ var('sf', '10') }}

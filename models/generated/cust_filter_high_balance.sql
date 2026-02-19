@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1997_building_agg') }} limit 1)
+
 select
     customer_key, customer_name, nation_key,
     customer_account_balance, customer_market_segment_name

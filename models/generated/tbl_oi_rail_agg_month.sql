@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:simple', 'rows_sf1:84', 'cols:3', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -11,6 +11,10 @@ select
     sum(gross_item_sales_amount) as total_sales
 from {{ ref('orders_items') }}
 where ship_mode_name = 'RAIL'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

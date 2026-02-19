@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_3_medium_1995') }} limit 1)
+
 select
     date_trunc('year', oi.order_date) as year,
     count(*) as item_count,

@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders', 'joins:0', 'agg:simple', 'rows_sf1:84', 'cols:3', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -11,6 +11,10 @@ select
     sum(order_amount) as total_amount
 from {{ ref('orders') }}
 where order_priority_code = '3-MEDIUM'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

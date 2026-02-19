@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_brand_brand42') }} limit 1)
+
 select supplier_key, supplier_name, nation_key, supplier_account_balance
 from {{ ref('suppliers') }}
 

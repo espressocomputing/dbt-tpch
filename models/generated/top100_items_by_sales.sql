@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_prio_5_low_seg_automobile_agg') }} limit 1)
+
 select
     order_item_key, order_key, part_key, supplier_key,
     gross_item_sales_amount, quantity

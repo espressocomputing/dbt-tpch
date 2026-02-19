@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1997_furniture_agg') }} limit 1)
+
 select
     floor(customer_account_balance / 1000) * 1000 as group_key,
     count(*) as cnt

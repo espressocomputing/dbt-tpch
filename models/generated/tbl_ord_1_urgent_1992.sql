@@ -5,9 +5,11 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_h1_1993_reg_air') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('orders') }}
+from {{ ref('tbl_ord_full') }}
 where order_priority_code = '1-URGENT'
     and order_date >= '1992-01-01' and order_date <= '1992-12-31'
 

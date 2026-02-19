@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('ord_filter_old_orders') }} limit 1)
+
 select
     customer_key, customer_name, customer_account_balance, nation_key
 from {{ ref('customers') }}

@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_agg_date_1998') }} limit 1)
+
 select
     r.region_name,
     count(*) as customer_count,

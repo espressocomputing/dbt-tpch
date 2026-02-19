@@ -10,7 +10,7 @@ select
     date_trunc('year', oi.order_date) as year,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('orders_items') }} oi
+from {{ ref('case_discount_tier') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key

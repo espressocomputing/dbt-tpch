@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('ord_prio_1_urgent_seg_machinery') }} limit 1)
+
 select
     order_item_key, customer_key, order_date, gross_item_sales_amount,
     row_number() over (partition by customer_key order by gross_item_sales_amount desc) as sales_rank

@@ -21,7 +21,7 @@ Sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROL
 ```bash
 uv run dbt run                                    # all models, SF10, direct
 uv run dbt run --vars '{"sf": "1"}'               # SF1
-uv run dbt run --select "tag:sample"              # 27-model smoke test
+uv run dbt run --select "tag:minimal"              # minimal smoke test
 uv run dbt run --select "tag:generated"           # only generated models
 uv run dbt run --select +dim_customer             # one model + upstream deps
 uv run dbt run --target proxy                     # through espresso staging proxy
@@ -31,7 +31,7 @@ uv run dbt run --target proxy                     # through espresso staging pro
 
 ```bash
 ./tools/run.sh                                    # SF1 + SF10, direct
-./tools/run.sh --sf 1 --select "tag:sample"       # 27-model smoke test
+./tools/run.sh --sf 1 --select "tag:minimal"       # minimal smoke test
 ./tools/run.sh --sf 1                             # SF1 only
 ./tools/run.sh --sf 10 --target proxy             # SF10 via proxy
 ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
@@ -57,11 +57,26 @@ SF is a dbt var (default `10`). Controls which source schema is read (`TPCH_SF1`
 
 ## Generated models
 
-993 models in `models/generated/` (289 tables, 704 views). Regenerate:
+993 models in `models/generated/` arranged in a random DAG. Regenerate:
 
 ```bash
-python3 tools/generate_models.py
+python3 tools/generate_models.py              # with DAG (default)
+python3 tools/generate_models.py --no-dag     # flat fan-out (no inter-model deps)
+python3 tools/generate_models.py --seed 123   # custom random seed
 ```
+
+### DAG structure
+
+By default, generated models are wired into a random DAG (seed 42) so the benchmark exercises dbt's DAG scheduling, not just raw SQL execution. Two edge types:
+
+- **Type A (source substitution)**: replaces an ODS `ref()` with a ref to an earlier passthrough model. Creates real data flow dependencies.
+- **Type B (existence dependency)**: prepends a no-op CTE (`select 1 from ref(...) limit 1`). Creates scheduling edges without changing output.
+
+~100 table models with `order_date` are converted to `incremental` materialization.
+
+The DAG is wide and shallow (max depth ~6, 50% of models at depth 0), so dbt still heavily parallelizes. `tag:minimal` models are excluded from DAG edges and always work standalone. DAG diagram: `models/generated/DAG.md`.
+
+For A/B comparison, `./tools/run.sh --no-dag` regenerates flat models before running.
 
 Each model is tagged with query properties for analysis:
 
@@ -82,9 +97,9 @@ Each model is tagged with query properties for analysis:
 models/base/        8 ephemeral wrappers (column renames)
 models/ods/         8 normalized tables (joins, calculations)
 models/wh/          8 star schema (dims, facts, reports)
-models/generated/   993 generated models (tables + views)
+models/generated/   993 generated models (tables, views, incremental) + DAG.md
 macros/             money casting, custom schema
-tools/              dbt_env.sh, generate_models.py, run.sh
+tools/              dbt_env.sh, generate_models.py, dag_builder.py, run.sh
 ```
 
 ## Useful flags

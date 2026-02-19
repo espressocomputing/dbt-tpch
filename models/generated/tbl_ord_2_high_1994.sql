@@ -7,7 +7,7 @@
 
 select
     order_key, order_date, customer_key, order_amount
-from {{ ref('orders') }}
+from {{ ref('ord_date_1995') }}
 where order_priority_code = '2-HIGH'
     and order_date >= '1994-01-01' and order_date <= '1994-12-31'
 

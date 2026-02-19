@@ -1,7 +1,7 @@
 {{
     config(
         materialized = 'view',
-        tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:window', 'rows_sf1:6M', 'cols:5', 'filter:none', 'sample', 'sf' ~ var('sf', '10')]
+        tags = ['generated', 'scan:orders_items', 'joins:0', 'agg:window', 'rows_sf1:6M', 'cols:5', 'filter:none', 'minimal', 'sf' ~ var('sf', '10')]
     )
 }}
 

@@ -8,7 +8,7 @@
 select
     customer_key, customer_name, nation_key,
     customer_account_balance, customer_market_segment_name
-from {{ ref('customers') }}
+from {{ ref('cust_seg_building') }}
 where customer_market_segment_name = 'AUTOMOBILE'
 
 -- sf={{ var('sf', '10') }}

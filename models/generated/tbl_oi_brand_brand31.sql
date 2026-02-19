@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items+parts', 'joins:1', 'agg:none', 'rows_sf1:240K', 'cols:4', 'filter:heavy', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -11,5 +11,8 @@ select
 from {{ ref('orders_items') }} oi
 join {{ ref('parts') }} p on oi.part_key = p.part_key
 where p.part_brand_name = 'Brand#31'
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 
 -- sf={{ var('sf', '10') }}

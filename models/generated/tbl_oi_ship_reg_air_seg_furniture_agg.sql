@@ -9,7 +9,7 @@ select
     date_trunc('month', oi.order_date) as month,
     count(*) as item_count,
     sum(oi.gross_item_sales_amount) as total_sales
-from {{ ref('orders_items') }} oi
+from {{ ref('oi_date_h1_1995') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 where oi.ship_mode_name = 'REG AIR'
     and c.customer_market_segment_name = 'FURNITURE'

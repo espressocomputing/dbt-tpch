@@ -5,9 +5,11 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_agg_date_h2_1996') }} limit 1)
+
 select
     o.order_key, o.order_date, o.order_amount
-from {{ ref('orders') }} o
+from {{ ref('ord_date_h1_1994') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 where o.order_priority_code = '4-NOT SPECIFIED'
     and c.customer_market_segment_name = 'HOUSEHOLD'

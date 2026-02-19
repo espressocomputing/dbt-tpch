@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
         tags = ['generated', 'scan:orders_items+customers+nations+regions', 'joins:3', 'agg:simple', 'rows_sf1:7', 'cols:3', 'filter:light', 'sf' ~ var('sf', '10')]
     )
 }}
@@ -14,6 +14,10 @@ join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 join {{ ref('nations') }} n on c.nation_key = n.nation_key
 join {{ ref('regions') }} r on n.region_key = r.region_key
 where r.region_name = 'ASIA'
+
+{% if is_incremental() %}
+  and order_date > (select max(order_date) from {{ this }})
+{% endif %}
 group by 1
 
 -- sf={{ var('sf', '10') }}

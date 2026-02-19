@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('pt_brand_brand24') }} limit 1)
+
 select customer_market_segment_name, count(*) as cnt, avg(customer_account_balance) as avg_balance
 from {{ ref('customers') }}
 group by customer_market_segment_name

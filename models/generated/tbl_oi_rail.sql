@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('cust_seg_building') }} limit 1)
+
 select
     order_item_key, order_key, order_date, customer_key,
     quantity, gross_item_sales_amount

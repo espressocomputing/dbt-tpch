@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_join_oi_seg_household') }} limit 1)
+
 select
     oi.order_item_key, oi.order_date, oi.gross_item_sales_amount,
     c.customer_name

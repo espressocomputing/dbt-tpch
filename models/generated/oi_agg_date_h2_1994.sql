@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_join_ord_cust_agg_seg') }} limit 1)
+
 select
     customer_key,
     count(*) as item_count,

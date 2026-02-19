@@ -12,7 +12,7 @@ with price_stats as (
         min(base_price) as min_price,
         max(base_price) as max_price,
         count(*) as sale_count
-    from {{ ref('orders_items') }}
+    from {{ ref('tbl_oi_returned') }}
     group by 1
 )
 select

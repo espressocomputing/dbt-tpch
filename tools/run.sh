@@ -10,6 +10,7 @@ set -euo pipefail
 #   ./tools/run.sh --target direct          # Direct Snowflake (no proxy)
 #   ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
 #   ./tools/run.sh --select "tag:generated" # Only generated models
+#   ./tools/run.sh --no-dag                 # Regenerate flat models (no DAG) before running
 #
 # Requires: eval $(AWS_PROFILE=espresso ./tools/dbt_env.sh espresso_ai_enterprise)
 
@@ -22,6 +23,7 @@ TARGET="direct"
 WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_SMALL_GEN1}"
 SELECT=""
 EXTRA_ARGS=""
+NO_DAG=""
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -42,6 +44,10 @@ while [[ $# -gt 0 ]]; do
             SELECT="$2"
             shift 2
             ;;
+        --no-dag)
+            NO_DAG=1
+            shift
+            ;;
         *)
             EXTRA_ARGS="$EXTRA_ARGS $1"
             shift
@@ -52,6 +58,11 @@ done
 export DBT_SNOWFLAKE_WAREHOUSE="$WAREHOUSE"
 
 cd "$PROJECT_DIR"
+
+if [[ -n "$NO_DAG" ]]; then
+    echo "=== Regenerating models with --no-dag (flat fan-out) ==="
+    python3 tools/generate_models.py --no-dag
+fi
 
 for SF in $SFS; do
     echo "=== Running SF${SF} on ${WAREHOUSE} via ${TARGET} ==="

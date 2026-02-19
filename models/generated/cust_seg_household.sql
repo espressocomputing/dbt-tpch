@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_seg_machinery_reg_america') }} limit 1)
+
 select
     customer_key, customer_name, customer_account_balance, nation_key
 from {{ ref('customers') }}

@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('pt_brand_brand54') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_status_code,
     order_priority_code, order_amount

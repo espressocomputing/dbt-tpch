@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('join_ord_seg_building') }} limit 1)
+
 select
     order_priority_code as group_key,
     count(*) as cnt, sum(order_amount) as total_amount

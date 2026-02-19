@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_ord_2_high_1998') }} limit 1)
+
 select
     order_key, order_date, customer_key, order_status_code,
     order_amount

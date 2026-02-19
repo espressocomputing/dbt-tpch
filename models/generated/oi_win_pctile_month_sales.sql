@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('oi_h1_1995_ship') }} limit 1)
+
 select
     order_item_key, date_trunc('month', order_date) as dim_key, gross_item_sales_amount as measure,
     percent_rank() over (partition by date_trunc('month', order_date) order by gross_item_sales_amount) as pct_rank,

@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_ship_fob_seg_automobile_agg') }} limit 1)
+
 select distinct c.customer_key, n.nation_name
 from {{ ref('customers') }} c
 join {{ ref('nations') }} n on c.nation_key = n.nation_key

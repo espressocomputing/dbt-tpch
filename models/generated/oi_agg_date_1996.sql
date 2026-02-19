@@ -5,6 +5,8 @@
     )
 }}
 
+with _dep as (select 1 from {{ ref('tbl_oi_1994_furniture_agg') }} limit 1)
+
 select
     customer_key,
     count(*) as item_count,

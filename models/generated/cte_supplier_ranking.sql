@@ -5,7 +5,8 @@
     )
 }}
 
-with supplier_sales as (
+with _dep as (select 1 from {{ ref('tbl_ord_5_low_1995') }} limit 1),
+supplier_sales as (
     select
         supplier_key,
         sum(gross_item_sales_amount) as total_sales,

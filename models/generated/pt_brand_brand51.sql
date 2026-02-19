@@ -7,7 +7,7 @@
 
 select
     part_key, part_name, part_type_name, part_size, retail_price
-from {{ ref('parts') }}
+from {{ ref('parts_filter_large') }}
 where part_brand_name = 'Brand#51'
 
 -- sf={{ var('sf', '10') }}

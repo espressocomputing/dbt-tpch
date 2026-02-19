@@ -10,7 +10,7 @@ select
     count(*) as order_count,
     sum(o.order_amount) as total_amount,
     avg(o.order_amount) as avg_amount
-from {{ ref('orders') }} o
+from {{ ref('ord_date_1994') }} o
 join {{ ref('customers') }} c on o.customer_key = c.customer_key
 group by 1
 
