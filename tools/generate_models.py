@@ -2596,11 +2596,52 @@ group by 1
         ])
 
 
+# === Sample subset for quick smoke tests ===
+# ~25 models covering every key dimension: tables/views, join counts, agg types,
+# big/small scans, filters, window funcs, CTEs, unions, subqueries.
+# Run with: uv run dbt run --select "tag:sample" --vars '{"sf":"1"}'
+SAMPLE_MODELS = {
+    # views, 0-join
+    "oi_full_scan",             # view, scan:orders_items, 0 joins, no agg, 6M rows, no filter
+    "oi_filter_recent_90d",     # view, filtered scan, light filter
+    "oi_filter_tiny_orders",    # view, heavy filter
+    "oi_agg_by_month",          # view, simple agg
+    "oi_win_rank_by_customer",  # view, window func
+    "oi_win_running_total",     # view, window (running total)
+    "ord_full_scan",            # view, scan:orders, smaller table
+    "cust_full_scan",           # view, scan:customers, 150K
+    "supp_full_scan",           # view, scan:suppliers, 10K
+    "distinct_ship_modes",      # view, distinct, tiny output
+    "top100_orders_by_amount",  # view, order by + limit
+    "case_shipping_speed",      # view, case expression
+    # views, joins
+    "join_orders_customers",    # view, 1 join, no agg
+    "join_oi_parts_agg_brand",  # view, 1 join, simple agg
+    "join3_oi_cust_nat",        # view, 2 joins
+    "join4_oi_cust_nat_reg",    # view, 3 joins
+    "join5_oi_parts_supp_nat_reg",  # view, 4 joins
+    # views, complex patterns
+    "cte_top_customers",        # view, CTE + join + filter
+    "cte_monthly_trend",        # view, CTE + window (multi agg)
+    "union_ship_modes",         # view, union all
+    "customers_without_orders", # view, NOT EXISTS subquery
+    "having_big_customers",     # view, HAVING clause
+    # tables (CTAS write path)
+    "tbl_oi_full",              # table, full scan write
+    "tbl_oi_agg_customer",      # table, agg write
+    "tbl_join_ord_cust",        # table, join write
+    "tbl_join3_oi_parts_supp",  # table, 2-join write
+    "tbl_cte_supplier_ranking", # table, CTE + window write
+}
+
+
 # === Wrap up: add SF-encoding comment to every model ===
 # This ensures different SF values produce different query text → different hashes
 
 def write_model(name, sql, materialized, tags):
     """Write a single model file with SF-encoding comment."""
+    if name in SAMPLE_MODELS:
+        tags = tags + ["sample"]
     full_sql = model_sql(sql, materialized, tags)
     # Encode SF in a comment so SF1 and SF10 produce different query hashes
     full_sql += "\n-- sf={{ var('sf', '10') }}\n"

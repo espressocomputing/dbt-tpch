@@ -21,6 +21,7 @@ Sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROL
 ```bash
 uv run dbt run                                    # all models, SF10, direct
 uv run dbt run --vars '{"sf": "1"}'               # SF1
+uv run dbt run --select "tag:sample"              # 27-model smoke test
 uv run dbt run --select "tag:generated"           # only generated models
 uv run dbt run --select +dim_customer             # one model + upstream deps
 uv run dbt run --target proxy                     # through espresso staging proxy
@@ -30,6 +31,7 @@ uv run dbt run --target proxy                     # through espresso staging pro
 
 ```bash
 ./tools/run.sh                                    # SF1 + SF10, direct
+./tools/run.sh --sf 1 --select "tag:sample"       # 27-model smoke test
 ./tools/run.sh --sf 1                             # SF1 only
 ./tools/run.sh --sf 10 --target proxy             # SF10 via proxy
 ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
