@@ -1,103 +1,98 @@
 # dbt TPC-H
 
-dbt project for Snowflake using the TPC-H sample dataset. Builds a star schema (base -> ODS -> dimensional warehouse) from Snowflake's built-in `SNOWFLAKE_SAMPLE_DATA.TPCH_SF10`.
+Star schema on Snowflake's `SNOWFLAKE_SAMPLE_DATA.TPCH_SF*`. 24 core models (base -> ODS -> dims/facts/reports) plus ~1000 generated models for proxy scale testing.
 
 ## Setup
 
 ```bash
-uv sync                      # install dbt-snowflake + deps
-uv run dbt deps              # install dbt-utils package
+uv sync && uv run dbt deps
 ```
 
 ## Credentials
-
-Creds are pulled from the espresso S3 config bucket. Load them into env vars before running dbt:
 
 ```bash
 eval $(AWS_PROFILE=espresso ./tools/dbt_env.sh espresso_ai_enterprise)
 ```
 
-This sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_HOST_DIRECT`, and `SNOWFLAKE_HOST_PROXY`.
-
-The dbt profile lives at `~/.dbt/profiles.yml` and references these env vars. The warehouse is configured separately in the profile (not from S3 creds) — see "Warehouse" below. Queries are tagged with `pj-dbt-tpch` for filtering in `QUERY_HISTORY`.
+Sets `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_HOST_DIRECT`, `SNOWFLAKE_HOST_PROXY`. Profile at `~/.dbt/profiles.yml`. All queries tagged `pj-dbt-tpch`.
 
 ## Running
 
 ```bash
-# verify connection
-uv run dbt debug
-
-# run a single model
-uv run dbt run --select nations
-
-# run a model + all its upstream dependencies
-uv run dbt run --select +dim_customer
-
-# run everything (24 models, DAG-ordered, 4 threads)
-uv run dbt run
+uv run dbt run                                    # all models, SF10, direct
+uv run dbt run --vars '{"sf": "1"}'               # SF1
+uv run dbt run --select "tag:generated"           # only generated models
+uv run dbt run --select +dim_customer             # one model + upstream deps
+uv run dbt run --target proxy                     # through espresso staging proxy
 ```
 
-Source data is read from `SNOWFLAKE_SAMPLE_DATA.TPCH_SF10` (read-only). Output tables are written to `PJ_DBT_DEV`.
-
-## Proxy vs direct
-
-The profile has two targets: `proxy` (default) and `direct`.
+### run.sh (loops over scale factors)
 
 ```bash
-# through espresso proxy (default)
-uv run dbt run
-
-# direct to snowflake
-uv run dbt run --target direct
+./tools/run.sh                                    # SF1 + SF10, direct
+./tools/run.sh --sf 1                             # SF1 only
+./tools/run.sh --sf 10 --target proxy             # SF10 via proxy
+./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
+./tools/run.sh --select "tag:generated"           # only generated models
 ```
+
+## Targets
+
+- **direct** (default) — straight to Snowflake
+- **proxy** — through espresso staging proxy (`*.staging.espressocomputing.com`)
 
 ## Warehouse
 
-The warehouse defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1`. This is independent of the creds loaded from S3 (which provide account, user, password, host, and role).
-
-Override via env var:
+Defaults to `TPCH_WH_BENCHMARK_SMALL_GEN1`. Override:
 
 ```bash
-DBT_SNOWFLAKE_WAREHOUSE=MY_OTHER_WH uv run dbt run
+DBT_SNOWFLAKE_WAREHOUSE=TPCH_WH_BENCHMARK_LARGE_GEN1 uv run dbt run
 ```
 
-## Scaling factor
+## Scale factor
 
-Change the source schema in `models/_source/source_tpch.yml` to use larger datasets:
+SF is a dbt var (default `10`). Controls which source schema is read (`TPCH_SF1`, `TPCH_SF10`, etc). Output always goes to `PJ_DBT_DEV`.
 
-- `TPCH_SF1` (1GB)
-- `TPCH_SF10` (10GB, default)
-- `TPCH_SF100` (100GB)
-- `TPCH_SF1000` (1TB)
+## Generated models
+
+993 models in `models/generated/` (289 tables, 704 views). Regenerate:
+
+```bash
+python3 tools/generate_models.py
+```
+
+Each model is tagged with query properties for analysis:
+
+| Tag | Examples | Purpose |
+|-----|----------|---------|
+| `generated` | — | All generated models |
+| `sf1`, `sf10` | dynamic | Scale factor (set at compile time) |
+| `scan:*` | `scan:orders_items`, `scan:orders+customers` | Tables scanned |
+| `joins:N` | `joins:0` .. `joins:4` | Join count |
+| `agg:*` | `none`, `simple`, `window`, `multi` | Aggregation type |
+| `rows_sf1:*` | `rows_sf1:6M`, `rows_sf1:25` | Est. output rows at SF1 |
+| `cols:N` | `cols:3` .. `cols:24` | Output column count |
+| `filter:*` | `none`, `light`, `heavy` | Predicate selectivity |
+
+## Project structure
+
+```
+models/base/        8 ephemeral wrappers (column renames)
+models/ods/         8 normalized tables (joins, calculations)
+models/wh/          8 star schema (dims, facts, reports)
+models/generated/   993 generated models (tables + views)
+macros/             money casting, custom schema
+tools/              dbt_env.sh, generate_models.py, run.sh
+```
 
 ## Useful flags
 
 ```bash
---select <model>       # run specific model(s)
---select +<model>      # model + all upstream deps
---select <model>+      # model + all downstream deps
---exclude <model>      # skip specific model(s)
---full-refresh         # drop and recreate all tables (same as default for non-incremental models)
---target <name>        # proxy or direct
---threads <n>          # override parallelism (default 4)
---vars '{"key":"val"}' # override dbt variables
+--select <model>       # specific model(s)
+--select +<model>      # model + upstream deps
+--exclude <model>      # skip model(s)
+--target proxy|direct  # connection target
+--threads <n>          # parallelism (default 4)
+--vars '{"sf":"1"}'    # override dbt variables
+--full-refresh         # drop + recreate tables
 ```
-
-## Repeated runs
-
-Models use `CREATE OR REPLACE TABLE`, so running multiple times just overwrites. No cleanup needed.
-
-## Project structure
-
-- `models/base/` - ephemeral wrappers that rename source columns
-- `models/ods/` - normalized tables with joins and calculations
-- `models/wh/` - star schema: `dim_*` (dimensions), `fct_*` (facts), `rpt_*` (reports)
-- `macros/` - helper macros (surrogate keys, money casting, batch metadata)
-- `tools/` - credential helper script
-
-## Next steps
-
-- Run the full model: `uv run dbt run`
-- Run tests: `uv run dbt test`
-- Try larger scale factors (SF10, SF100) for benchmarking
-- Compare proxy vs direct performance with `--target`
