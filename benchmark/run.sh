@@ -4,20 +4,20 @@ set -euo pipefail
 # Run dbt models across scale factors.
 #
 # Usage:
-#   ./tools/run.sh                          # SF10, direct, medium warehouse
-#   ./tools/run.sh --sf 1                   # SF1 only
-#   ./tools/run.sh --sf "1 10"              # SF1 then SF10
-#   ./tools/run.sh --target direct          # Direct Snowflake (no proxy)
-#   ./tools/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
-#   ./tools/run.sh --select "tag:generated" # Only generated models
-#   ./tools/run.sh --no-dag                 # Regenerate flat models (no DAG) before running
+#   ./benchmark/run.sh                          # SF10, direct, medium warehouse
+#   ./benchmark/run.sh --sf 1                   # SF1 only
+#   ./benchmark/run.sh --sf "1 10"              # SF1 then SF10
+#   ./benchmark/run.sh --target direct          # Direct Snowflake (no proxy)
+#   ./benchmark/run.sh --warehouse TPCH_WH_BENCHMARK_LARGE_GEN1
+#   ./benchmark/run.sh --select "tag:generated" # Only generated models
+#   ./benchmark/run.sh --no-dag                 # Regenerate flat models (no DAG) before running
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Load Snowflake credentials if not already set
 if [[ -z "${SNOWFLAKE_ACCOUNT:-}" ]]; then
     echo "=== Loading Snowflake credentials ==="
-    eval "$(AWS_PROFILE=espresso "$SCRIPT_DIR/dbt_env.sh" espresso_ai_enterprise)"
+    eval "$(AWS_PROFILE=espresso "$PROJECT_DIR/tools/dbt_env.sh" espresso_ai_enterprise)"
 fi
 
 # Defaults
@@ -64,7 +64,7 @@ cd "$PROJECT_DIR"
 
 if [[ -n "$NO_DAG" ]]; then
     echo "=== Regenerating models with --no-dag (flat fan-out) ==="
-    python3 tools/generate_models.py --no-dag
+    python3 benchmark/generate_models.py --no-dag
 fi
 
 for SF in $SFS; do
