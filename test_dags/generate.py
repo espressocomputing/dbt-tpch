@@ -59,11 +59,11 @@ def _config_block(materialized: str, tags: list[str]) -> str:
 
 
 def _model_sql(body: str, tags: list[str]) -> str:
-    wrapped = f"""
-select *, '{{{{ var("sf", "10") }}}}' as _sf
-from ({body}
-) _q"""
-    return _config_block("table", tags) + "\n" + wrapped
+    # Add _sf as a literal column. We don't wrap with "select *, _sf from (...)"
+    # because downstream models using "select *" from upstream would get a
+    # duplicate _sf column from the wrapper.
+    sf_expr = """'{{ var("sf", "10") }}'"""
+    return _config_block("table", tags) + f"\n\n{body}\n"
 
 
 def _write_model(name: str, body: str, tags: list[str]) -> None:

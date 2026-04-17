@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select count(*) as cnt from {{ ref('td_wide10_slack_src') }}
-) _q
+select count(*) as cnt from {{ ref('td_wide10_slack_src') }}

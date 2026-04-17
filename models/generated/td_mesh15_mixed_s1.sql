@@ -5,8 +5,6 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select customer_key, order_key, gross_item_sales_amount, order_date
 from {{ ref('orders_items') }} where order_date > '1997-01-01'
-) _q

@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select nation_key, sum(total_sales) as nation_sales from {{ ref('td_wide10_slack_src') }} group by 1
-) _q
+select nation_key, sum(total_sales) as nation_sales from {{ ref('td_wide10_slack_src') }} group by 1

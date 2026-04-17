@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select * from {{ ref('td_fan3_mixed_root') }} where total_sales > 50000
-) _q
+select * from {{ ref('td_fan3_mixed_root') }} where total_sales > 50000

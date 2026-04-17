@@ -5,8 +5,7 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select
     customer_key,
     count(*) as row_count,
@@ -14,4 +13,3 @@ select
     avg(discount_percentage) as avg_discount
 from {{ ref('td_diamond10_mixed_src') }}
 group by 1
-) _q

@@ -5,8 +5,7 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select
     oi.customer_key,
     c.customer_name,
@@ -17,4 +16,3 @@ select
 from {{ ref('orders_items') }} oi
 join {{ ref('customers') }} c on oi.customer_key = c.customer_key
 group by 1, 2, 3
-) _q

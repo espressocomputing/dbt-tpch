@@ -5,7 +5,5 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select * from {{ ref('nations') }}
-) _q

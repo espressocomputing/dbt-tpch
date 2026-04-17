@@ -5,8 +5,7 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select 'td_wide10_slack_w1' as src, count(*) as n from {{ ref('td_wide10_slack_w1') }}
+select 'td_wide10_slack_w1' as src, count(*) as n from {{ ref('td_wide10_slack_w1') }}
 union all
 select 'td_wide10_slack_w2' as src, count(*) as n from {{ ref('td_wide10_slack_w2') }}
 union all
@@ -21,4 +20,3 @@ union all
 select 'td_wide10_slack_w7' as src, count(*) as n from {{ ref('td_wide10_slack_w7') }}
 union all
 select 'td_wide10_slack_w8' as src, count(*) as n from {{ ref('td_wide10_slack_w8') }}
-) _q

@@ -5,8 +5,7 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select
     oi.customer_key,
     oi.order_key,
@@ -20,4 +19,3 @@ select
     oi.order_date,
     oi.ship_date
 from {{ ref('orders_items') }} oi
-) _q

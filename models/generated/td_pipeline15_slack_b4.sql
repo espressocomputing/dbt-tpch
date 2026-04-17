@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select customer_key, order_count * 10 as score from {{ ref('td_pipeline15_slack_b3') }}
-) _q
+select customer_key, order_count * 10 as score from {{ ref('td_pipeline15_slack_b3') }}

@@ -5,8 +5,6 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select *, row_number() over (order by total desc) as rnk
 from {{ ref('td_pipeline15_slack_a3') }}
-) _q

@@ -5,8 +5,6 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select count(*) as total_rows
 from {{ ref('td_tree10_mixed_l2a') }}
-) _q

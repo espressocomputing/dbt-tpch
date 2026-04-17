@@ -5,8 +5,6 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (
+
 select count(*) as total_rows
 from {{ ref('td_chain3_slack_n2') }}
-) _q

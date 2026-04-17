@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select count(*) as nation_count from {{ ref('td_pipeline15_slack_c2') }}
-) _q
+select count(*) as nation_count from {{ ref('td_pipeline15_slack_c2') }}

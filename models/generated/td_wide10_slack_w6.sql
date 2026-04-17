@@ -5,6 +5,4 @@
     )
 }}
 
-select *, '{{ var("sf", "10") }}' as _sf
-from (select max(total_sales) as max_sales from {{ ref('td_wide10_slack_src') }}
-) _q
+select max(total_sales) as max_sales from {{ ref('td_wide10_slack_src') }}
