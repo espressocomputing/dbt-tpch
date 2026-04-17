@@ -6,5 +6,5 @@
 }}
 
 select *, '{{ var("sf", "10") }}' as _sf
-from (select region_key, name as region_name from {{ ref('regions') }} limit 100000
+from (select region_key, region_name from {{ ref('regions') }} limit 100000
 ) _q

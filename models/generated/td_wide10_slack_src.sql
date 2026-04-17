@@ -9,7 +9,7 @@ select *, '{{ var("sf", "10") }}' as _sf
 from (
 select
     oi.customer_key,
-    c.name as customer_name,
+    c.customer_name,
     c.nation_key,
     sum(oi.gross_item_sales_amount) as total_sales,
     count(*) as line_count,

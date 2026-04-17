@@ -6,6 +6,5 @@
 }}
 
 select *, '{{ var("sf", "10") }}' as _sf
-from (select a.* from {{ ref('td_diamond10_mixed_a3') }} a
-join {{ ref('td_diamond10_mixed_a4') }} b on a.customer_key = b.customer_key
+from (select a.* from {{ ref('td_diamond10_mixed_a3') }} a join {{ ref('td_diamond10_mixed_a4') }} b on a.customer_key = b.customer_key
 ) _q

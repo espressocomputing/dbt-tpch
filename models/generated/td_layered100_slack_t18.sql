@@ -6,5 +6,5 @@
 }}
 
 select *, '{{ var("sf", "10") }}' as _sf
-from (select *, 'td_layered100_slack_t18' as _node from {{ ref('td_layered100_slack_s05') }} limit 50000
+from (select count(*) as cnt, 'td_layered100_slack_t18' as _node from {{ ref('td_layered100_slack_s05') }}
 ) _q

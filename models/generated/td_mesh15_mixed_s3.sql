@@ -7,5 +7,5 @@
 
 select *, '{{ var("sf", "10") }}' as _sf
 from (
-select order_key, customer_key, total_price from {{ ref('orders') }}
+select order_key, customer_key, order_amount from {{ ref('orders') }}
 ) _q

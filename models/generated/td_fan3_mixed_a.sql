@@ -6,9 +6,5 @@
 }}
 
 select *, '{{ var("sf", "10") }}' as _sf
-from (
-select *
-from {{ ref('td_fan3_mixed_root') }}
-where gross_item_sales_amount > 1000
-  and discount_percentage < 0.1
+from (select * from {{ ref('td_fan3_mixed_root') }} where total_sales > 50000
 ) _q

@@ -7,6 +7,6 @@
 
 select *, '{{ var("sf", "10") }}' as _sf
 from (
-select count(*) as total_rows, sum(total_sales) as grand_total
+select count(*) as total_rows
 from {{ ref('td_pipeline15_slack_b4') }}
 ) _q

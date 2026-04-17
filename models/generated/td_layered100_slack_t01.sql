@@ -7,8 +7,8 @@
 
 select *, '{{ var("sf", "10") }}' as _sf
 from (
-select a.*, 'td_layered100_slack_t01' as _node
+select count(*) as cnt, 'td_layered100_slack_t01' as _node
 from {{ ref('td_layered100_slack_s03') }} a
-join {{ ref('td_layered100_slack_s01') }} b on 1=1
+cross join {{ ref('td_layered100_slack_s01') }} b
 limit 50000
 ) _q

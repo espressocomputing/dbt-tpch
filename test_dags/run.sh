@@ -10,6 +10,7 @@ set -euo pipefail
 #   ./test_dags/run.sh --dag td_chain3_slack                    # single DAG only
 #   ./test_dags/run.sh --sf 10 --warehouse TPCH_WH_BENCHMARK_MEDIUM_GEN1
 #   ./test_dags/run.sh --target proxy                           # run through espresso proxy
+#   ./test_dags/run.sh --threads 1                              # fully serial (no intra-DAG parallelism)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -26,16 +27,18 @@ SF="1"
 WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_SMALL_GEN1}"
 TARGET="direct"
 SINGLE_DAG=""
+THREADS=""  # empty = use dbt default (profiles.yml); set to 1 for fully serial
 
 # Parse args
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --repeats) REPEATS="$2"; shift 2 ;;
-        --sf)      SF="$2"; shift 2 ;;
+        --repeats)   REPEATS="$2"; shift 2 ;;
+        --sf)        SF="$2"; shift 2 ;;
         --warehouse) WAREHOUSE="$2"; shift 2 ;;
-        --target)  TARGET="$2"; shift 2 ;;
-        --dag)     SINGLE_DAG="$2"; shift 2 ;;
-        *)         echo "Unknown arg: $1"; exit 1 ;;
+        --target)    TARGET="$2"; shift 2 ;;
+        --dag)       SINGLE_DAG="$2"; shift 2 ;;
+        --threads)   THREADS="$2"; shift 2 ;;
+        *)           echo "Unknown arg: $1"; exit 1 ;;
     esac
 done
 
@@ -62,7 +65,12 @@ else
     DAGS=("${ALL_DAGS[@]}")
 fi
 
-echo "=== Test DAG runs: ${#DAGS[@]} DAGs x ${REPEATS} repeats, SF${SF}, ${WAREHOUSE}, ${TARGET} ==="
+THREADS_FLAG=""
+if [[ -n "$THREADS" ]]; then
+    THREADS_FLAG="--threads $THREADS"
+fi
+
+echo "=== Test DAG runs: ${#DAGS[@]} DAGs x ${REPEATS} repeats, SF${SF}, ${WAREHOUSE}, ${TARGET}${THREADS:+, threads=$THREADS} ==="
 echo ""
 
 for dag in "${DAGS[@]}"; do
@@ -71,7 +79,8 @@ for dag in "${DAGS[@]}"; do
         uv run dbt run \
             --target "$TARGET" \
             --select "tag:${dag}" \
-            --vars "{\"sf\": \"${SF}\"}"
+            --vars "{\"sf\": \"${SF}\"}" \
+            $THREADS_FLAG
         echo ""
     done
 done
