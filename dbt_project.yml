@@ -42,5 +42,13 @@ models:
 on-run-start:
   - "ALTER SESSION SET USE_CACHED_RESULT = FALSE"
 
+dispatch:
+  - macro_namespace: dbt
+    search_order:
+      - dbt_tpch
+      - dbt_query_tags
+      - dbt
+
 query-comment:
-  append: True
+  comment: "{{ dbt_query_tags.get_query_comment(node) }}"
+  append: true
