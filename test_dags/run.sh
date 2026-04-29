@@ -5,11 +5,12 @@ set -euo pipefail
 # Each DAG runs N times so the pipeline sees >=2 invocations.
 #
 # Usage:
-#   ./test_dags/run.sh                                          # all DAGs, 3 repeats, SF1, SMALL warehouse
+#   ./test_dags/run.sh                                          # all DAGs, 3 repeats, SF1, SMALL warehouse, local proxy
 #   ./test_dags/run.sh --repeats 5                              # 5 repeats
 #   ./test_dags/run.sh --dag td_chain3_slack                    # single DAG only
 #   ./test_dags/run.sh --sf 10 --warehouse TPCH_WH_BENCHMARK_MEDIUM_GEN1
-#   ./test_dags/run.sh --target proxy                           # run through espresso proxy
+#   ./test_dags/run.sh --target direct                          # bypass proxy, hit Snowflake directly
+#   ./test_dags/run.sh --target proxy                           # run through deployed staging proxy
 #   ./test_dags/run.sh --threads 1                              # fully serial (no intra-DAG parallelism)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,7 +26,7 @@ fi
 REPEATS=3
 SF="1"
 WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_SMALL_GEN1}"
-TARGET="proxy"
+TARGET="local"
 SINGLE_DAG=""
 THREADS=""  # empty = use dbt default (profiles.yml); set to 1 for fully serial
 
