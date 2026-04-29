@@ -25,7 +25,7 @@ fi
 REPEATS=3
 SF="1"
 WAREHOUSE="${DBT_SNOWFLAKE_WAREHOUSE:-TPCH_WH_BENCHMARK_SMALL_GEN1}"
-TARGET="direct"
+TARGET="proxy"
 SINGLE_DAG=""
 THREADS=""  # empty = use dbt default (profiles.yml); set to 1 for fully serial
 
