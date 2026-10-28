@@ -1,4 +1,8 @@
 packages:
-- package: dbt-labs/dbt_utils
-  version: 1.1.1
-sha1_hash: a158c48c59c2bb7d729d2a4e215aabe5bb4f3353
+  - name: dbt_utils
+    package: dbt-labs/dbt_utils
+    version: 1.1.1
+  - git: https://github.com/espressocomputing/dbt-markers.git
+    name: dbt_markers
+    revision: f0cf7fafc98530d326fe6c4021da49d160aa7555
+sha1_hash: 33d0c9a849afdfcdc9300ed40d61b8e8f07aaf20
