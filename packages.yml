@@ -1,3 +1,5 @@
 packages:
   - package: dbt-labs/dbt_utils
     version: 1.1.1
+  - git: https://github.com/espressocomputing/dbt-markers.git
+    revision: b5aa0f4a9a1473d03304dbe7ead9396eef66452a

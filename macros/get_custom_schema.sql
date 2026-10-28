@@ -11,5 +11,9 @@
 {%- endmacro -%}
 
 {%- macro generate_schema_name(schema_name, node) -%}
-    {{ generate_schema_name_for_env(schema_name) }}
+    {%- if node.path.startswith('markers_canary/') -%}
+        DBT_MARKERS_CANARY_20261028
+    {%- else -%}
+        {{ generate_schema_name_for_env(schema_name) }}
+    {%- endif -%}
 {%- endmacro -%}

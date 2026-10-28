@@ -1,0 +1,6 @@
+version: 2
+models:
+  - name: markers_probe
+    columns:
+      - name: id
+        tests: [not_null, unique]

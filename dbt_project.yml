@@ -4,11 +4,15 @@
 # name or the intended use of these models
 name: 'dbt_tpch'
 version: '1.0'
+config-version: 2
 
-source-paths: ["models"]
+dbt-cloud:
+  project-id: 362202
+
+model-paths: ["models"]
 analysis-paths: ["analysis"] 
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
 
 target-path: "target"  # directory which will store compiled SQL files
@@ -38,4 +42,8 @@ models:
         schema: wh
 
 query-comment:
-  append: True
+  comment: "{{ dbt_markers.query_comment(node) }}"
+  append: true
+
+on-run-start:
+  - "{{ dbt_markers.emit_manifest() if dbt_markers.emit_manifest is defined else '' }}"
