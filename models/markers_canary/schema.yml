@@ -4,3 +4,13 @@ models:
     columns:
       - name: id
         tests: [not_null, unique]
+unit_tests:
+  - name: markers_probe_unit
+    model: markers_probe
+    given:
+      - input: ref('markers_input')
+        format: sql
+        rows: select 1 as id
+    expect:
+      rows:
+        - {id: 1}
