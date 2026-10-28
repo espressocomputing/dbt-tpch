@@ -34,6 +34,8 @@ vars:
 
 models:
   dbt_tpch:
+      markers_canary:
+        +database: ESPRESSO_DBT_MARKERS_CANARY_20261028_362202
       base:
         schema: base
       ods:
