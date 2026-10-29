@@ -5,10 +5,10 @@
 name: 'dbt_tpch'
 version: '1.0'
 
-source-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analysis"] 
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
 
 target-path: "target"  # directory which will store compiled SQL files
@@ -30,6 +30,7 @@ vars:
 
 models:
   dbt_tpch:
+      +database: ESPRESSO_DBT_PLAN_CANARY_20261028
       base:
         schema: base
       ods:
@@ -37,5 +38,10 @@ models:
       wh:
         schema: wh
 
+
+config-version: 2
+dbt-cloud:
+  project-id: 362202
 query-comment:
-  append: True
+  comment: "{{ dbt_markers.query_comment(node) }}"
+  append: true
